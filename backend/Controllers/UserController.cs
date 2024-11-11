@@ -76,8 +76,8 @@ namespace backend.Controllers
                     Response.Cookies.Append("AuthToken", token, new CookieOptions
                     {
                         HttpOnly = true,
-                        Secure = true,
-                        SameSite = SameSiteMode.Strict
+                        Secure = false, // Should be true in production, but needs to be false to be visible on localhost
+                        SameSite = SameSiteMode.None // Should be Strict in production, but needs to be None on localhost
                     });
 
                     return Ok(new { message = "Login successful: " });
