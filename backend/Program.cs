@@ -5,6 +5,7 @@ using backend.Models;
 using backend.Repositories;
 using backend.Services;
 using dotenv.net;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
@@ -13,97 +14,108 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace backend
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            DotEnv.Load();
+	public class Program
+	{
+		public static void Main(string[] args)
+		{
+			DotEnv.Load();
 
-            var builder = WebApplication.CreateBuilder(args);
+			var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(
-                    policy =>
-                    {
-                        policy.WithOrigins("http://localhost:5173")
-                              .AllowCredentials()
-                              .AllowAnyHeader();
-                    });
-            });
-            // Try to load a connection string from .env. If it does not exist, get it from an appsettings.json file.
-            string? connectionString = Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("Default");
-            builder.Services.AddDbContext<DatabaseContext>(options =>
-            {
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-            });
-            
-            ///////
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = Environment.GetEnvironmentVariable("Issuer"),
-                    ValidAudience = Environment.GetEnvironmentVariable("Audience"),
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWTSecretKey")))
-                };
-            });
-            builder.Services.AddControllersWithViews();
+			builder.Services.AddCors(options =>
+			{
+				options.AddDefaultPolicy(
+					policy =>
+					{
+						policy.WithOrigins("http://localhost:5173")
+							  .AllowCredentials()
+							  .AllowAnyHeader();
+					});
+			});
+			// Try to load a connection string from .env. If it does not exist, get it from an appsettings.json file.
+			string? connectionString = Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("Default");
+			builder.Services.AddDbContext<DatabaseContext>(options =>
+			{
+				options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+			});
+			
+			///////
+			builder.Services.AddAuthentication(options =>
+			{
+				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			})
+			.AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidateIssuerSigningKey = true,
+		ValidIssuer = Environment.GetEnvironmentVariable("Issuer"),
+		ValidAudience = Environment.GetEnvironmentVariable("Audience"),
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWTSecretKey")))
+	};
+});
 
-            
+			builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+			.AddCookie(options =>
+			{
+				options.Cookie.HttpOnly = true;
+				options.Cookie.SecurePolicy = CookieSecurePolicy.None; // Allow HTTP
+			});
+			
+			builder.Services.AddControllersWithViews();
 
-            // Register / add repositories to the container
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IFlightRepository, FlightRepository>();
-            builder.Services.AddScoped<IAirportRepository, AirportRepository>();
+			
 
-            // Add services to the container.
-            builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IFlightService, FlightService>();
-            builder.Services.AddScoped<IAirportService, AirportService>();
-            builder.Services.AddAutoMapper(typeof(MappingProfile));
+			// Register / add repositories to the container
+			builder.Services.AddScoped<IUserRepository, UserRepository>();
+			builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+			builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 
-            builder.Services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-                });
+			// Add services to the container.
+			builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+			builder.Services.AddScoped<IUserService, UserService>();
+			builder.Services.AddScoped<IFlightService, FlightService>();
+			builder.Services.AddScoped<IAirportService, AirportService>();
+			builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+			builder.Services.AddControllers()
+				.AddJsonOptions(options =>
+				{
+					options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+				});
 
-            var app = builder.Build();
+			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+			builder.Services.AddEndpointsApiExplorer();
+			builder.Services.AddSwaggerGen();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+			var app = builder.Build();
 
-            app.UseCors();
+			// Configure the HTTP request pipeline.
+			if (app.Environment.IsDevelopment())
+			{
+				app.UseSwagger();
+				app.UseSwaggerUI();
+			}
+			
+			// Add the middleware to the pipeline
+			app.UseMiddleware<JwtFromCookieMiddleware>();
 
-            app.UseHttpsRedirection();
-            app.UseCookiePolicy(new CookiePolicyOptions
-            {
-                HttpOnly = HttpOnlyPolicy.Always,
-                Secure = CookieSecurePolicy.Always
-            });
-            app.UseAuthorization();
-            app.UseAuthentication();
-            app.MapControllers();
+			app.UseCors();
 
-            app.Run();
-        }
-    }
+			app.UseHttpsRedirection();
+			/*app.UseCookiePolicy(new CookiePolicyOptions
+			{
+				HttpOnly = HttpOnlyPolicy.None,
+				Secure = CookieSecurePolicy.None
+			});*/
+			app.UseAuthentication();
+			app.UseAuthorization();
+			app.MapControllers();
+
+			app.Run();
+		}
+	}
 }
