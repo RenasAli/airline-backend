@@ -32,6 +32,14 @@ namespace backend.Controllers
 		{
 			try
 			{
+				Console.WriteLine("Shit works?");
+				
+				// Log all cookies in the request
+				foreach (var cookie in HttpContext.Request.Cookies)
+				{
+					Console.WriteLine($"Cookie: {cookie.Key} = {cookie.Value}");
+				}
+				
 				var createdFlight = await _flightService.CreateFlight(flightCreationRequest);
 				return StatusCode(StatusCodes.Status201Created, new { message = "Flight was created successfully!", createdFlight });
 			}

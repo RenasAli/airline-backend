@@ -29,7 +29,8 @@ namespace backend
 					{
 						policy.WithOrigins("http://localhost:5173")
 							  .AllowCredentials()
-							  .AllowAnyHeader();
+							  .AllowAnyHeader()
+							  .AllowAnyMethod();
 					});
 			});
 			// Try to load a connection string from .env. If it does not exist, get it from an appsettings.json file.
@@ -100,10 +101,10 @@ namespace backend
 				app.UseSwaggerUI();
 			}
 			
+			app.UseCors();
+			
 			// Add the middleware to the pipeline
 			app.UseMiddleware<JwtFromCookieMiddleware>();
-
-			app.UseCors();
 
 			app.UseHttpsRedirection();
 			/*app.UseCookiePolicy(new CookiePolicyOptions

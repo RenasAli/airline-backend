@@ -78,7 +78,8 @@ namespace backend.Controllers
 						HttpOnly = true,
 						Secure = false,
 						SameSite = SameSiteMode.None,
-						Expires = DateTime.Now.AddHours(1)
+						Expires = DateTime.Now.AddHours(1),
+						Path = "/"
 					});
 
 					return Ok(new { message = "Login successful: " });
