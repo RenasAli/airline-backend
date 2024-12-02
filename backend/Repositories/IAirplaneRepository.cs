@@ -1,4 +1,5 @@
 ﻿using backend.Models;
+using backend.Models.MongoDB;
 
 namespace backend.Repositories
 {
@@ -7,5 +8,7 @@ namespace backend.Repositories
         Task<List<Airplane>> GetAll();
 
         Task<Airplane?> GetAirplaneById(int id);
+
+        Task<List<AirplaneMongo>> GetAirplanesMongoDB();
     }
 }

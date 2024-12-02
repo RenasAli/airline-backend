@@ -14,7 +14,7 @@ using Sentry.Extensibility;
 
 namespace backend
 {
-	public class Program
+    public class Program
 	{
 		public static void Main(string[] args)
 		{
@@ -60,8 +60,12 @@ namespace backend
 			string? connectionString = Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("Default");
 			builder.Services.AddDbContext<DatabaseContext>(options =>
 			{
-				options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+				options.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.AutoDetect(connectionString));
 			});
+
+
+			string? mongoDbConnectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING");
+			builder.Services.AddMongoDB<MongoDBContext>(mongoDbConnectionString, "mydatabase");
 			
 			///////
 			builder.Services.AddAuthentication(options =>

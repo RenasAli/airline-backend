@@ -15,6 +15,7 @@ namespace backend.Services
         {
             var airplanes = await _airplaneRepository.GetAll();
             var mappedAirplanes = _mapper.Map<List<AirplaneResponse>>(airplanes);
+            await _airplaneRepository.GetAirplanesMongoDB();
             return mappedAirplanes;
         }
 
