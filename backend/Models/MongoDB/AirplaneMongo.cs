@@ -6,7 +6,7 @@ namespace backend.Models.MongoDB
     public class AirplaneMongo
     {
         [BsonId]
-        public ObjectId _id { get; set; }
+        public int Id { get; set; }
 
         [BsonElement("name")]
         public string Name  { get; set; }

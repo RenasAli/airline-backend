@@ -20,12 +20,5 @@ namespace backend.Repositories
             var airplane = await _context.Airplanes.FindAsync(id);
             return airplane;
         }
-
-        public async Task<List<AirplaneMongo>> GetAirplanesMongoDB()
-        {
-            var airplanes = await _mongoContext.Airplanes.ToListAsync();
-            Console.WriteLine("GOING MONGO: " + airplanes.Count);
-            return airplanes;
-        }
     }
 }

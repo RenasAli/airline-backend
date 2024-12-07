@@ -8,7 +8,5 @@ namespace backend.Repositories
         Task<List<Airplane>> GetAll();
 
         Task<Airplane?> GetAirplaneById(int id);
-
-        Task<List<AirplaneMongo>> GetAirplanesMongoDB();
     }
 }

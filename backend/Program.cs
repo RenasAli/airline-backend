@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Sentry.Extensibility;
+using backend.Database.Data.MongoDB;
+using backend.Repositories.MongoDB;
 
 namespace backend
 {
@@ -66,7 +68,11 @@ namespace backend
 
 
 			string? mongoDbConnectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING");
-			builder.Services.AddMongoDB<MongoDBContext>(mongoDbConnectionString, "mydatabase");
+
+			builder.Services.AddDbContext<MongoDBContext>(options =>
+			{
+				options.UseMongoDB(mongoDbConnectionString, "mydatabase");
+			});
 			
 			///////
 			builder.Services.AddAuthentication(options =>
@@ -112,12 +118,31 @@ namespace backend
 	  // Add HTTP client for Google Distance API
 	  builder.Services.AddHttpClient<IDistanceApiService, DistanceApiService>();
 
+			// Register data seeders
+			builder.Services.AddTransient<MongoDBSeeder>();
 
+			// Register repository dependency injection depending on database type
+			string? databaseType = Environment.GetEnvironmentVariable("DB_TYPE");
+
+			switch (databaseType)
+			{
+				case "MySQL":
+					builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
+					break;
+				case "MongoDB":
+                    builder.Services.AddScoped<IAirplaneRepository, AirplaneMongoDBRepository>();
+					break;
+                case "Neo4j":
+                    Console.WriteLine("Nothing to register yet");
+					break;
+                default:
+					throw new ArgumentException("Need to specify a database type by prodiving the DB_TYPE environment variable ('MySQL' | 'MongoDB' | 'Neo4j').");
+            }
+			
             // Register / add repositories to the container
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IFlightRepository, FlightRepository>();
             builder.Services.AddScoped<IAirportRepository, AirportRepository>();
-            builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
             builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
@@ -166,7 +191,14 @@ namespace backend
 			app.UseAuthorization();
 			app.MapControllers();
 
-			app.Run();
+            // Seed the MongoDB database
+            using (var scope = app.Services.CreateScope())
+            {
+                var mongoSeeder = scope.ServiceProvider.GetRequiredService<MongoDBSeeder>();
+                mongoSeeder.Seed();
+            }
+
+            app.Run();
 		}
 	}
 }
