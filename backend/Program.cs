@@ -53,7 +53,8 @@ namespace backend
 					{
 						policy.WithOrigins(Environment.GetEnvironmentVariable("CLIENT_URL") ?? "http://localhost:5173")
 							  .AllowCredentials()
-							  .AllowAnyHeader();
+							  .AllowAnyHeader()
+							  .AllowAnyMethod();
 					});
 			});
 			// Try to load a connection string from .env. If it does not exist, get it from an appsettings.json file.
@@ -129,6 +130,7 @@ namespace backend
             builder.Services.AddScoped<IAirlineService, AirlineService>();
             builder.Services.AddScoped<IBookingService, BookingService>();
 			builder.Services.AddScoped<ITicketAvailabilityChecker, TicketAvailabilityChecker>();
+			builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 

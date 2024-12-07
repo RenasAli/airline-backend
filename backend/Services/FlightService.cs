@@ -2,6 +2,7 @@
 using backend.Dtos;
 using backend.Models;
 using backend.Repositories;
+using backend.Enums;
 
 namespace backend.Services
 {
@@ -10,6 +11,7 @@ namespace backend.Services
         IMapper mapper,
         IDistanceApiService distanceApiService,
         IAirportRepository airportRepository,
+        IEmailService emailService,
         IAirplaneService airplaneService
             ) : IFlightService
     {
@@ -17,6 +19,7 @@ namespace backend.Services
         private readonly IMapper _mapper = mapper;
         private readonly IDistanceApiService _distanceApiService = distanceApiService;
         private readonly IAirportRepository _airportRepository = airportRepository;
+        private readonly IEmailService _emailService = emailService;
         private readonly IAirplaneService _airplaneService = airplaneService;
 
         public async Task<List<FlightResponse>> GetAllFlights()
@@ -30,6 +33,13 @@ namespace backend.Services
         {
             var flight = await _flightRepository.GetFlightById(id);
             return flight;
+        }
+
+        public async Task<FlightResponse?> GetFlightWithRelationshipsById(int id)
+        {
+            var flight = await _flightRepository.GetFlightWithRelationshipsById(id);
+            var mappedFlight = _mapper.Map<FlightResponse>(flight);
+            return mappedFlight;
         }
         public async Task<Flight> CreateFlight(FlightCreationRequest flightCreationRequest)
         {
@@ -104,5 +114,30 @@ namespace backend.Services
             var flightClass = await _flightRepository.GetFlightClassById(id);
             return flightClass;
         }
+
+        public async Task CancelFlight(int flightId)
+        {
+            var deletedFlight = await _flightRepository.Delete(flightId);
+            if (deletedFlight == null)
+            {
+                throw new Exception("Flight could not be found."); // Could potentially define more specific exceptions (EntityNotfoundException)
+            }
+            var passengers = deletedFlight.Tickets.Select(ticket => ticket.Passenger).ToList();
+            try
+            {
+                await _emailService.SendFlightEmailAsync(passengers, FlightStatus.Cancelled);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception("An error occured while trying to send email to passengers regarding cancellation of flight.");
+            }
+        }
+        public async Task ChangeFlight()
+        {
+            var dummyPassenger = new List<Passenger> { new() { Email = "" } };
+            await _emailService.SendFlightEmailAsync(dummyPassenger, FlightStatus.Changed);
+        }
+
     }
 }
