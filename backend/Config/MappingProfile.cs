@@ -75,6 +75,16 @@ namespace backend.Config
                 .ForMember(dest => dest.ArrivalPortNavigation, opt => opt.MapFrom(src => src.ArrivalPort))
                 .ForMember(dest => dest.DeparturePortNavigation, opt => opt.MapFrom(src => src.DeparturePort));
 
+            CreateMap<UserMongo, User>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role));
+
+            CreateMap<FlightClassMongo, FlightClass>();
+
+
+            // Mapping for BookingMongo and embedded documents and snapshots
 
             CreateMap<FlightSnapShot, Flight>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
@@ -90,14 +100,12 @@ namespace backend.Config
                 .ForMember(dest => dest.ArrivalPortNavigation, opt => opt.MapFrom(src => src.ArrivalPort))
                 .ForMember(dest => dest.DeparturePortNavigation, opt => opt.MapFrom(src => src.DeparturePort))
                 .ForMember(dest => dest.FlightsAirline, opt => opt.MapFrom(src => src.FlightsAirline))
-                .ForMember(dest => dest.FlightsAirplane, opt => opt.MapFrom(src => src.FlightsAirplane));
+                .ForMember(dest => dest.FlightsAirplane, opt => opt.MapFrom(src => src.FlightsAirplane))
+                .ForMember(dest => dest.FlightsAirplaneId, opt => opt.MapFrom(src => src.FlightsAirplane.Id))
+                .ForMember(dest => dest.FlightsAirlineId, opt => opt.MapFrom(src => src.FlightsAirline.Id))
+                .ForMember(dest => dest.DeparturePort, opt => opt.MapFrom(src => src.DeparturePort.Id))
+                .ForMember(dest => dest.ArrivalPort, opt => opt.MapFrom(src => src.ArrivalPort.Id));
 
-            // MongoDB -> Domain Models for Booking
-            CreateMap<BookingMongo, Booking>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.ConfirmationNumber, opt => opt.MapFrom(src => src.ConfirmationNumber))
-                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
-                .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets));
 
             CreateMap<UserSnapshot, User>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
@@ -127,15 +135,17 @@ namespace backend.Config
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.PriceMultiplier, opt => opt.MapFrom(src => src.PriceMultiplier));
 
-            // MongoDB -> Domain Models for FlightClass
-            CreateMap<FlightClassMongo, FlightClass>();
 
-            // MongoDB -> Domain Models for User
-            CreateMap<UserMongo, User>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role));       
+
+            CreateMap<BookingMongo, Booking>()
+              .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+              .ForMember(dest => dest.ConfirmationNumber, opt => opt.MapFrom(src => src.ConfirmationNumber))
+              .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+              .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id))
+              .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets));
+
+ 
+
         }
     }
 }

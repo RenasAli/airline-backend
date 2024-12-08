@@ -20,7 +20,6 @@ namespace backend.Repositories.MongoDB
         {
             var bookings = await _context.Bookings.Where(booking => booking.User.Id == id)
                 .ToListAsync();
-            Console.WriteLine(bookings.Count);
             return _mapper.Map<List<Booking>>(bookings);
         }
     }

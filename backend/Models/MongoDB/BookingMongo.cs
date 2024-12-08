@@ -16,7 +16,7 @@ namespace backend.Models.MongoDB
         public UserSnapshot User { get; set; } = null!;
 
         [BsonElement("tickets")]
-        public List<TicketEmbedded> Tickets { get; set; } = new();
+        public List<TicketEmbedded> Tickets { get; set; }
     }
 
     public class UserSnapshot
@@ -29,6 +29,9 @@ namespace backend.Models.MongoDB
 
         [BsonElement("role")]
         public UserRole Role { get; set; }
+
+        [BsonElement("password")]
+        public string Password { get; set; }
     }
 
     public class TicketEmbedded
@@ -38,6 +41,9 @@ namespace backend.Models.MongoDB
 
         [BsonElement("price")]
         public decimal Price { get; set; }
+
+        [BsonElement("bookingId")]
+        public int TicketsBookingId { get; set; }
 
         [BsonElement("ticketNumber")]
         public string TicketNumber { get; set; } = null!;

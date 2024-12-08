@@ -144,8 +144,9 @@ namespace backend.Database.Data.MongoDB
                     ConfirmationNumber = "ABC123456",
                     User = new UserSnapshot
                     {
-                        Id = 42,
+                        Id = 7,
                         Email = "user@example.com",
+                        Password = "fdsfdggdf",
                         Role = UserRole.Customer
                     },
                     Tickets = new List<TicketEmbedded>
@@ -155,6 +156,7 @@ namespace backend.Database.Data.MongoDB
             Id = 101,
             Price = 299.99m,
             TicketNumber = "TICKET123",
+            TicketsBookingId = 1,
             Passenger = new PassengerEmbedded
             {
                 Id = 7,
