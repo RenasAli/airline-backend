@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using backend.Models.MongoDB;
+﻿using backend.Models.MongoDB;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using MongoDB.EntityFrameworkCore.Extensions;
 
@@ -9,16 +9,15 @@ namespace backend.Database
     {
         public DbSet<AirplaneMongo> Airplanes { get; set; }
 
+        public DbSet<FlightMongo> Flights { get; set; }
+
+        public DbSet<AirlineMongo> Airlines { get; set; }
+
+        public DbSet<AirportMongo> Airports { get; set; }
 
         public static MongoDBContext Create(IMongoDatabase database) =>
         new(new DbContextOptionsBuilder<MongoDBContext>()
             .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)
             .Options);
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<AirplaneMongo>().ToCollection("airplanes");
-        }
     }
 }

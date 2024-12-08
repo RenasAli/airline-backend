@@ -1,4 +1,6 @@
-﻿using backend.Models.MongoDB;
+﻿using backend.Controllers;
+using backend.Models.MongoDB;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace backend.Database.Data.MongoDB
 {
@@ -9,7 +11,8 @@ namespace backend.Database.Data.MongoDB
 
         public void Seed()
         {
-            if (!_context.Airplanes.Any()) {
+            if (!_context.Airplanes.Any())
+            {
                 var airplanes = new List<AirplaneMongo>()
                 {
                   new()
@@ -41,8 +44,74 @@ namespace backend.Database.Data.MongoDB
                   }
                 };
 
-                _context.Airplanes.AddRangeAsync(airplanes);
-                _context.SaveChangesAsync();
-                    } }
+                var flights = new List<FlightMongo>()
+                {
+                    new()
+                    {
+                        Id = 1,
+                        FlightCode = "TEST123",
+                        DepartureTime = new DateTime(),
+                        CompletionTime = new DateTime().AddHours(5),
+                        TravelTime = 200,
+                        Kilometers = 2500,
+                        Price = 300,
+                        EconomyClassSeatsAvailable = 100,
+                        BusinessClassSeatsAvailable = 40,
+                        FirstClassSeatsAvailable = 10,
+                        FlightsAirline = new()
+                        {
+                            Id = 1,
+                            Name = "Delta Airlines"
+                        },
+                        FlightsAirplane = new()
+                        {
+                            Id = 1,
+                            Name = "Test plane",
+                            EconomyClassSeats = 100,
+                            BusinessClassSeats = 40,
+                            FirstClassSeats = 10
+                        },
+                        ArrivalPort = new()
+                        {
+                            Id = 1,
+                            Name = "Los angeles airport",
+                            Code = "LAX",
+                            City = new()
+                            {
+                                Id = 1,
+                                Name = "Los Angeles",
+                                State = new()
+                                {
+                                    Id = 1,
+                                    Code = "CA"
+                                }
+                            }
+                        },
+                        DeparturePort = new()
+                        {
+                            Id = 2,
+                            Name = "John F Kennedy Airport",
+                            Code = "JFK",
+                            City = new()
+                            {
+                                Id = 2,
+                                Name = "????",
+                                State = new()
+                                {
+                                    Id = 2,
+                                    Code = "WA"
+                                }
+                            }
+                        }
 
-    } }
+
+                    }
+                };
+
+                _context.Airplanes.AddRangeAsync(airplanes);
+                _context.Flights.AddRangeAsync(flights);
+                _context.SaveChangesAsync();
+            }
+        }
+    }
+}
