@@ -129,10 +129,12 @@ namespace backend
 				case "MySQL":
 					builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();        
                     builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+                    builder.Services.AddScoped<IBookingRepository, BookingRepository>();
                     break;
 				case "MongoDB":
                     builder.Services.AddScoped<IAirplaneRepository, AirplaneMongoDBRepository>();
 					builder.Services.AddScoped<IFlightRepository, FlightsMongoDBRepository>();
+					builder.Services.AddScoped<IBookingRepository, BookingMongoDBRepository>();
 					break;
                 case "Neo4j":
                     Console.WriteLine("Nothing to register yet");
@@ -146,7 +148,7 @@ namespace backend
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAirportRepository, AirportRepository>();
             builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
-            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+            
 
             // Add services to the container.
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

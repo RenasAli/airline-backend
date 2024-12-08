@@ -1,5 +1,6 @@
 ﻿using backend.Models;
 using backend.Models.MongoDB;
+using MongoDB.Bson;
 
 
 namespace backend.Database.Data.MongoDB
@@ -137,6 +138,100 @@ namespace backend.Database.Data.MongoDB
                     }
                 };
 
+                var booking = new BookingMongo
+                {
+                    Id = 1,
+                    ConfirmationNumber = "ABC123456",
+                    User = new UserSnapshot
+                    {
+                        Id = 42,
+                        Email = "user@example.com",
+                        Role = UserRole.Customer
+                    },
+                    Tickets = new List<TicketEmbedded>
+    {
+        new TicketEmbedded
+        {
+            Id = 101,
+            Price = 299.99m,
+            TicketNumber = "TICKET123",
+            Passenger = new PassengerEmbedded
+            {
+                Id = 7,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "john.doe@example.com"
+            },
+            FlightClass = new FlightClassSnapshot
+            {
+                Id = 1,
+                Name = FlightClassName.EconomyClass,
+                PriceMultiplier = 1.0m
+            },
+            // Including the FlightSnapshot
+            Flight = new FlightSnapShot
+            {
+                Id = 501,
+                FlightCode = "FLIGHT123",
+                DepartureTime = DateTime.UtcNow.AddHours(2),
+                CompletionTime = DateTime.UtcNow.AddHours(5),
+                TravelTime = 180,
+                Kilometers = 1500,
+                Price = 299.99m,
+                EconomyClassSeatsAvailable = 50,
+                BusinessClassSeatsAvailable = 10,
+                FirstClassSeatsAvailable = 5,
+                ArrivalPort = new AirportSnapshot
+                {
+                    Id = 201,
+                    Name = "JFK International Airport",
+                    Code = "JFK",
+                    City = new CitySnapshot
+                    {
+                        Id = 301,
+                        Name = "New York",
+                        State = new StateSnapshot
+                        {
+                            Id = 401,
+                            Code = "NY"
+                        }
+                    }
+                },
+                DeparturePort = new AirportSnapshot
+                {
+                    Id = 202,
+                    Name = "Los Angeles International Airport",
+                    Code = "LAX",
+                    City = new CitySnapshot
+                    {
+                        Id = 302,
+                        Name = "Los Angeles",
+                        State = new StateSnapshot
+                        {
+                            Id = 402,
+                            Code = "CA"
+                        }
+                    }
+                },
+                FlightsAirline = new AirlineSnapshot
+                {
+                    Id = 601,
+                    Name = "Awesome Airline"
+                },
+                FlightsAirplane = new AirplaneSnapshot
+                {
+                    Id = 701,
+                    Name = "Boeing 737",
+                    EconomyClassSeats = 150,
+                    BusinessClassSeats = 30,
+                    FirstClassSeats = 10
+                }
+            }
+        }
+    }
+                };
+
+                _context.Bookings.Add(booking);
                 _context.Users.AddRange(users);
                 _context.Airplanes.AddRange(airplanes);
                 _context.Flights.AddRange(flights);

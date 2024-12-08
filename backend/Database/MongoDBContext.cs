@@ -16,6 +16,11 @@ namespace backend.Database
         public DbSet<AirportMongo> Airports { get; set; }
 
         public DbSet<UserMongo> Users { get; set; }
+        public DbSet<FlightClassMongo> FlightClasses { get; set; }
+
+        public DbSet<BookingMongo> Bookings { get; set; }
+
+
 
         public static MongoDBContext Create(IMongoDatabase database) =>
         new(new DbContextOptionsBuilder<MongoDBContext>()
