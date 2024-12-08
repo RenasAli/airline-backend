@@ -127,10 +127,12 @@ namespace backend
 			switch (databaseType)
 			{
 				case "MySQL":
-					builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
-					break;
+					builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();        
+                    builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+                    break;
 				case "MongoDB":
                     builder.Services.AddScoped<IAirplaneRepository, AirplaneMongoDBRepository>();
+					builder.Services.AddScoped<IFlightRepository, FlightsMongoDBRepository>();
 					break;
                 case "Neo4j":
                     Console.WriteLine("Nothing to register yet");
@@ -138,10 +140,10 @@ namespace backend
                 default:
 					throw new ArgumentException("Need to specify a database type by prodiving the DB_TYPE environment variable ('MySQL' | 'MongoDB' | 'Neo4j').");
             }
-			
-            // Register / add repositories to the container
+
+			// Register repositories for the DI container
+
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IFlightRepository, FlightRepository>();
             builder.Services.AddScoped<IAirportRepository, AirportRepository>();
             builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();

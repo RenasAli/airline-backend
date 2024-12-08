@@ -15,6 +15,8 @@ namespace backend.Database
 
         public DbSet<AirportMongo> Airports { get; set; }
 
+        public DbSet<UserMongo> Users { get; set; }
+
         public static MongoDBContext Create(IMongoDatabase database) =>
         new(new DbContextOptionsBuilder<MongoDBContext>()
             .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)

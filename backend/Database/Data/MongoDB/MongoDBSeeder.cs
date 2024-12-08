@@ -1,6 +1,6 @@
-﻿using backend.Controllers;
+﻿using backend.Models;
 using backend.Models.MongoDB;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
+
 
 namespace backend.Database.Data.MongoDB
 {
@@ -103,14 +103,45 @@ namespace backend.Database.Data.MongoDB
                                 }
                             }
                         }
-
-
                     }
                 };
 
-                _context.Airplanes.AddRangeAsync(airplanes);
-                _context.Flights.AddRangeAsync(flights);
-                _context.SaveChangesAsync();
+                var airports = new List<AirportMongo>()
+                {
+                  new()
+                  {
+                      Id = 1,
+                      Name = "Los angeles airport",
+                      Code = "LAX",
+                      City = new()
+                      {
+                         Id = 1,
+                         Name = "Los Angeles",
+                         State = new()
+                         {
+                             Id = 1,
+                             Code = "CA"
+                         }
+                      }
+                  }
+                };
+
+                var users = new List<UserMongo>()
+                {
+                    new()
+                    {
+                        Id = 1,
+                        Email = "customer@example.com",
+                        Password = "AQAAAAIAAYagAAAAEJvAdN3g69LF6cuKWK/xIHyUyz1qtNoVCMgKIlSd5oTPwk+7/A+qEAcxQJ2B+FvghQ==",
+                        Role = UserRole.Admin,
+                    }
+                };
+
+                _context.Users.AddRange(users);
+                _context.Airplanes.AddRange(airplanes);
+                _context.Flights.AddRange(flights);
+                _context.Airports.AddRange(airports);
+                _context.SaveChanges();
             }
         }
     }
