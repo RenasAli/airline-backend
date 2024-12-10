@@ -33,7 +33,17 @@ namespace backend.Config
 
 			CreateMap<Booking, BookingResponse>();
 			
+			CreateMap<Ticket, TicketResponse>()
+				.ForMember(dest => dest.FlightCode, opt => opt.MapFrom(src => src.Flight.FlightCode))
+				.ForMember(dest => dest.DeparturePortName, opt => opt.MapFrom(src => src.Flight.DeparturePortNavigation.Name))
+				.ForMember(dest => dest.ArrivalPortName, opt => opt.MapFrom(src => src.Flight.ArrivalPortNavigation.Name))
+				.ForMember(dest => dest.FlightClassName, opt => opt.MapFrom(src => src.FlightClass.Name))
+				.ForMember(dest => dest.PassengerFirstName, opt => opt.MapFrom(src => src.Passenger.FirstName))
+				.ForMember(dest => dest.PassengerLastName, opt => opt.MapFrom(src => src.Passenger.LastName))
+				.ForMember(dest => dest.PassengerEmail, opt => opt.MapFrom(src => src.Passenger.Email));
 
+        	CreateMap<Booking, BookingResponse>()
+            	.ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets));
         }
     }
 }

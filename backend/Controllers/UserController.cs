@@ -80,7 +80,7 @@ namespace backend.Controllers
 					Response.Cookies.Append("AuthToken", token, new CookieOptions
 					{
 						HttpOnly = true,
-						Secure = true, // Ensure this is set to false when using localhost
+						Secure = false, // Ensure this is set to false when using localhost
 						SameSite = SameSiteMode.Strict,
 					});
 					// Return response message and user role from token
@@ -91,7 +91,7 @@ namespace backend.Controllers
 			return Unauthorized();
 		}
 		
-		[Authorize(Roles = "Admin, User")]
+		[Authorize(Roles = "Admin, Customer")]
 		[HttpPost("logout")]
 		public IActionResult Logout()
 		{

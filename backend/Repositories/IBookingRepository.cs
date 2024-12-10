@@ -5,7 +5,7 @@ namespace backend.Repositories
 {
     public interface IBookingRepository
     {
-        Task<List<Booking>> GetBookingsByUserId(int id);
+        Task<List<BookingResponse>> GetBookingsByUserId(int id);
         Task<Booking> CreateBooking(BookingProcessedRequest bookingProcessedRequest);
     }
 }
