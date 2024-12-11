@@ -1,3 +1,5 @@
+using System.Globalization;
+
 public class TicketResponse {
 
 //    public int Id {get; set;}
@@ -8,6 +10,7 @@ public class TicketResponse {
     public string DeparturePortName { get; set; } = null!;
     public string ArrivalPortName { get; set; } = null!;
     public string FlightClassName { get; set; } = null!;
+    public int FlightTravelTime { get; set; }
     public string PassengerFirstName { get; set; } = null!;
     public string PassengerLastName { get; set; } = null!;
     public string PassengerEmail { get; set; } = null!;
