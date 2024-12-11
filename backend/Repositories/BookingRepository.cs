@@ -15,7 +15,7 @@ namespace backend.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public async Task<List<BookingResponse>> GetBookingsByUserId(int id)
+        public async Task<List<Booking>> GetBookingsByUserId(int id)
         {
             var bookings = await _context.Bookings
                 .Where(booking => booking.UserId == id)
@@ -31,8 +31,7 @@ namespace backend.Repositories
                     .ThenInclude(t => t.FlightClass)
                 .ToListAsync();
 
-            // Maps the list of bookings to a list of BookingResponse DTOs
-            return _mapper.Map<List<BookingResponse>>(bookings);
+            return bookings;
         }
 
         public async Task<Booking> CreateBooking(BookingProcessedRequest request)
