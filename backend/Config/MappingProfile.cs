@@ -20,15 +20,15 @@ namespace backend.Config
 
 			CreateMap<User, JwtRequest>();
 
-            CreateMap<Airport, AirportResponse>();
+			CreateMap<Airport, AirportResponse>();
 
-            CreateMap<Airplane, AirplaneResponse>();
-            
-            CreateMap<Airline, AirlineResponse>();
+			CreateMap<Airplane, AirplaneResponse>();
+			
+			CreateMap<Airline, AirlineResponse>();
 
-            CreateMap<BookingCreationRequest, BookingProcessedRequest>();
+			CreateMap<BookingCreationRequest, BookingProcessedRequest>();
 
-            CreateMap<TicketCreationRequest, TicketProcessedRequest>();
+			CreateMap<TicketCreationRequest, TicketProcessedRequest>();
 
 			CreateMap<Booking, BookingResponse>();
 			
@@ -38,12 +38,14 @@ namespace backend.Config
 				.ForMember(dest => dest.ArrivalPortName, opt => opt.MapFrom(src => src.Flight.ArrivalPortNavigation.Name))
 				.ForMember(dest => dest.FlightClassName, opt => opt.MapFrom(src => src.FlightClass.Name))
 				.ForMember(dest => dest.FlightTravelTime, opt => opt.MapFrom(src => src.Flight.TravelTime))
+				.ForMember(dest => dest.FlightDepartureTime, opt => opt.MapFrom(src => src.Flight.DepartureTime))
+				.ForMember(dest => dest.FlightCompletionTime, opt => opt.MapFrom(src => src.Flight.CompletionTime))
 				.ForMember(dest => dest.PassengerFirstName, opt => opt.MapFrom(src => src.Passenger.FirstName))
 				.ForMember(dest => dest.PassengerLastName, opt => opt.MapFrom(src => src.Passenger.LastName))
 				.ForMember(dest => dest.PassengerEmail, opt => opt.MapFrom(src => src.Passenger.Email));
 
-        	CreateMap<Booking, BookingResponse>()
-            	.ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets));
-        }
-    }
+			CreateMap<Booking, BookingResponse>()
+				.ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets));
+		}
+	}
 }
