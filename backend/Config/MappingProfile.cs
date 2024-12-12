@@ -5,37 +5,37 @@ using backend.Models.MongoDB;
 
 namespace backend.Config
 {
-	public class MappingProfile: Profile
-	{
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            CreateMap<User, UserResponse>();
 
-		public MappingProfile() {
-			CreateMap<User, UserResponse>();
+            CreateMap<FlightCreationRequest, Flight>()
+               .ForMember(dest => dest.FlightsAirlineId, opt => opt.MapFrom(src => src.AirlineId))
+               .ForMember(dest => dest.FlightsAirplaneId, opt => opt.MapFrom(src => src.AirplaneId))
+               .ForMember(dest => dest.DeparturePort, opt => opt.MapFrom(src => src.DepartureAirportId))
+               .ForMember(dest => dest.ArrivalPort, opt => opt.MapFrom(src => src.ArrivalAirportId))
+               .ForMember(dest => dest.DepartureTime, opt => opt.MapFrom(src => src.DepartureDateTime));
 
-			CreateMap<FlightCreationRequest, Flight>()
-			   .ForMember(dest => dest.FlightsAirlineId, opt => opt.MapFrom(src => src.AirlineId))
-			   .ForMember(dest => dest.FlightsAirplaneId, opt => opt.MapFrom(src => src.AirplaneId))
-			   .ForMember(dest => dest.DeparturePort, opt => opt.MapFrom(src => src.DepartureAirportId))
-			   .ForMember(dest => dest.ArrivalPort, opt => opt.MapFrom(src => src.ArrivalAirportId))
-			   .ForMember(dest => dest.DepartureTime, opt => opt.MapFrom(src => src.DepartureDateTime));
-			
-			CreateMap<Flight, FlightResponse>();
+            CreateMap<Flight, FlightResponse>();
 
-			CreateMap<User, JwtRequest>();
+            CreateMap<User, JwtRequest>();
 
             CreateMap<Airport, AirportResponse>();
 
             CreateMap<Airplane, AirplaneResponse>();
-            
+
             CreateMap<Airline, AirlineResponse>();
 
             CreateMap<BookingCreationRequest, BookingProcessedRequest>();
 
             CreateMap<TicketCreationRequest, TicketProcessedRequest>();
 
-			CreateMap<Booking, BookingResponse>();
+            CreateMap<Booking, BookingResponse>();
 
-			// Mappings from MongoDB entities to the "shared" models
-			CreateMap<AirplaneMongo, Airplane>();
+            // Mappings from MongoDB entities to the "shared" models
+            CreateMap<AirplaneMongo, Airplane>();
 
             CreateMap<AirlineSnapshot, Airline>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
@@ -66,7 +66,6 @@ namespace backend.Config
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code));
 
-
             CreateMap<FlightMongo, Flight>()
                 .ForMember(dest => dest.FlightsAirlineId, opt => opt.MapFrom(src => src.FlightsAirline.Id))
                 .ForMember(dest => dest.FlightsAirplaneId, opt => opt.MapFrom(src => src.FlightsAirplane.Id))
@@ -83,9 +82,7 @@ namespace backend.Config
 
             CreateMap<FlightClassMongo, FlightClass>();
 
-
             // Mapping for BookingMongo and embedded documents and snapshots
-
             CreateMap<FlightSnapShot, Flight>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.FlightCode, opt => opt.MapFrom(src => src.FlightCode))
@@ -106,7 +103,6 @@ namespace backend.Config
                 .ForMember(dest => dest.DeparturePort, opt => opt.MapFrom(src => src.DeparturePort.Id))
                 .ForMember(dest => dest.ArrivalPort, opt => opt.MapFrom(src => src.ArrivalPort.Id));
 
-
             CreateMap<UserSnapshot, User>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
@@ -123,7 +119,6 @@ namespace backend.Config
                 .ForMember(dest => dest.PassengerId, opt => opt.MapFrom(src => src.Passenger.Id))
                 .ForMember(dest => dest.FlightClassId, opt => opt.MapFrom(src => src.FlightClass.Id));
 
-
             CreateMap<PassengerEmbedded, Passenger>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
@@ -135,8 +130,6 @@ namespace backend.Config
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.PriceMultiplier, opt => opt.MapFrom(src => src.PriceMultiplier));
 
-
-
             CreateMap<BookingMongo, Booking>()
               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
               .ForMember(dest => dest.ConfirmationNumber, opt => opt.MapFrom(src => src.ConfirmationNumber))
@@ -144,8 +137,18 @@ namespace backend.Config
               .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id))
               .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets));
 
- 
-
+            CreateMap<Ticket, TicketResponse>()
+                .ForMember(dest => dest.FlightCode, opt => opt.MapFrom(src => src.Flight.FlightCode))
+                .ForMember(dest => dest.DeparturePortName, opt => opt.MapFrom(src => src.Flight.DeparturePortNavigation.Name))
+                .ForMember(dest => dest.ArrivalPortName, opt => opt.MapFrom(src => src.Flight.ArrivalPortNavigation.Name))
+                .ForMember(dest => dest.FlightClassName, opt => opt.MapFrom(src => src.FlightClass.Name))
+                .ForMember(dest => dest.FlightTravelTime, opt => opt.MapFrom(src => src.Flight.TravelTime))
+                .ForMember(dest => dest.FlightDepartureTime, opt => opt.MapFrom(src => src.Flight.DepartureTime))
+                .ForMember(dest => dest.FlightCompletionTime, opt => opt.MapFrom(src => src.Flight.CompletionTime))
+                .ForMember(dest => dest.PassengerFirstName, opt => opt.MapFrom(src => src.Passenger.FirstName))
+                .ForMember(dest => dest.PassengerLastName, opt => opt.MapFrom(src => src.Passenger.LastName))
+                .ForMember(dest => dest.PassengerEmail, opt => opt.MapFrom(src => src.Passenger.Email));
         }
     }
 }
+			

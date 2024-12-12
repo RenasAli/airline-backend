@@ -28,7 +28,7 @@ namespace backend
 	  builder.WebHost.UseSentry(options =>
 			{
 				options.TracesSampleRate = 0.5;
-				options.Dsn = Environment.GetEnvironmentVariable("SENTRY_DSN");
+				options.Dsn = Environment.GetEnvironmentVariable("SENTRY_DSN") ?? "";
 				options.MaxRequestBodySize = RequestSize.Medium;
 				options.MinimumBreadcrumbLevel = LogLevel.Debug;
 				options.AttachStacktrace = true;
@@ -89,7 +89,7 @@ namespace backend
 					ValidateIssuerSigningKey = true,
 					ValidIssuer = Environment.GetEnvironmentVariable("Issuer"),
 					ValidAudience = Environment.GetEnvironmentVariable("Audience"),
-					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWTSecretKey")))
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWTSecretKey") ?? ""))
 				};
 
 				options.Events = new JwtBearerEvents
