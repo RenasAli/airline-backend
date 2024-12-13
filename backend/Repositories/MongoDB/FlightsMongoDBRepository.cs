@@ -59,5 +59,15 @@ namespace backend.Repositories.MongoDB
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<Ticket>> GetTicketsByFlightId(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateFlight(Flight flight)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

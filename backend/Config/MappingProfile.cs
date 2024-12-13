@@ -74,11 +74,12 @@ namespace backend.Config
                 .ForMember(dest => dest.ArrivalPortNavigation, opt => opt.MapFrom(src => src.ArrivalPort))
                 .ForMember(dest => dest.DeparturePortNavigation, opt => opt.MapFrom(src => src.DeparturePort));
 
+            CreateMap<User, UserMongo>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.MySQLKey, opt => opt.MapFrom(src => src.Id));
+
             CreateMap<UserMongo, User>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.MySQLKey));
 
             CreateMap<FlightClassMongo, FlightClass>();
 

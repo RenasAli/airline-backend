@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.EntityFrameworkCore;
 
 namespace backend.Models.MongoDB
@@ -7,7 +8,9 @@ namespace backend.Models.MongoDB
     public class UserMongo
     {
         [BsonId]
-        public int Id { get; set; }
+        public ObjectId Id { get; set; }
+
+        public int MySQLKey {  get; set; }
 
         [BsonElement("email")]
         public string Email { get; set; }

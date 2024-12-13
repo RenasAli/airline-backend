@@ -131,7 +131,7 @@ namespace backend.Database.Data.MongoDB
                 {
                     new()
                     {
-                        Id = 1,
+                        MySQLKey = 1,
                         Email = "customer@example.com",
                         Password = "AQAAAAIAAYagAAAAEJvAdN3g69LF6cuKWK/xIHyUyz1qtNoVCMgKIlSd5oTPwk+7/A+qEAcxQJ2B+FvghQ==",
                         Role = UserRole.Admin,
