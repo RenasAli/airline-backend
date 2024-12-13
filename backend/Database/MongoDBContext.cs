@@ -20,8 +20,6 @@ namespace backend.Database
 
         public DbSet<BookingMongo> Bookings { get; set; }
 
-
-
         public static MongoDBContext Create(IMongoDatabase database) =>
         new(new DbContextOptionsBuilder<MongoDBContext>()
             .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)

@@ -15,7 +15,7 @@ namespace backend.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public async Task<List<Booking>> GetBookingsByUserId(int id)
+        public async Task<List<Booking>> GetBookingsByUserId(long id)
         {
             var bookings = await _context.Bookings
                 .Where(booking => booking.UserId == id)

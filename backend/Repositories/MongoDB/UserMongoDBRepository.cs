@@ -2,6 +2,7 @@
 using backend.Database;
 using backend.Models;
 using backend.Models.MongoDB;
+using backend.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories.MongoDB
@@ -14,8 +15,10 @@ namespace backend.Repositories.MongoDB
         public async Task Create(User user)
         {
             var userMongo = _mapper.Map<UserMongo>(user);
+            userMongo.Id = UniqueSequenceGenerator.GenerateLongIdUsingTicks();
             await _context.Users.AddAsync(userMongo);
             await _context.SaveChangesAsync();
+
         }
 
         public async Task<List<User>> GetAll()
@@ -30,7 +33,7 @@ namespace backend.Repositories.MongoDB
             return _mapper.Map<User?>(user);
         }
 
-        public async Task<User?> GetUserById(int id)
+        public async Task<User?> GetUserById(long id)
         {
             var user = await _context.Users.FindAsync(id);
             return _mapper.Map<User?>(user);

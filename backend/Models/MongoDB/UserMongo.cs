@@ -8,9 +8,8 @@ namespace backend.Models.MongoDB
     public class UserMongo
     {
         [BsonId]
-        public ObjectId Id { get; set; }
+        public long Id { get; set; }
 
-        public int MySQLKey {  get; set; }
 
         [BsonElement("email")]
         public string Email { get; set; }

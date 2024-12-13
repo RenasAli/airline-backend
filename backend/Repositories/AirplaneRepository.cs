@@ -15,7 +15,7 @@ namespace backend.Repositories
             return airplanes;
         }
 
-        public async Task<Airplane?> GetAirplaneById(int id)
+        public async Task<Airplane?> GetAirplaneById(long id)
         {
             var airplane = await _context.Airplanes.FindAsync(id);
             return airplane;

@@ -12,9 +12,10 @@ namespace backend.Repositories.MongoDB
         public Task<Flight> Create(Flight flight)
         {
             throw new NotImplementedException();
+            
         }
 
-        public Task<Flight> Delete(int id)
+        public Task<Flight> Delete(long id)
         {
             throw new NotImplementedException();
         }
@@ -25,24 +26,27 @@ namespace backend.Repositories.MongoDB
             return _mapper.Map<List<Flight>>(flights);
         }
 
-        public Task<Flight?> GetFlightById(int id)
+        public async Task<Flight?> GetFlightById(long id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Flight?> GetFlightByIdempotencyKey(string idempotencyKey)
+        public async Task<Flight?> GetFlightByIdempotencyKey(string idempotencyKey)
         {
-            throw new NotImplementedException();
+            var flight = await _context.Flights.FirstOrDefaultAsync(flight => flight.IdempotencyKey == idempotencyKey);
+            return _mapper.Map<Flight>(flight);
         }
 
-        public Task<FlightClass?> GetFlightClassById(int id)
+        public async Task<FlightClass?> GetFlightClassById(long id)
         {
-            throw new NotImplementedException();
+            var flight = await _context.FlightClasses.FindAsync(id);
+            return _mapper.Map<FlightClass>(flight);
         }
 
-        public Task<List<Flight>> GetFlightsByAirplaneId(int airplaneId)
+        public async Task<List<Flight>> GetFlightsByAirplaneId(long airplaneId)
         {
-            throw new NotImplementedException();
+            var flights = await _context.Flights.Where(flight => flight.FlightsAirplane.Id == airplaneId).ToListAsync();
+            return _mapper.Map<List<Flight>>(flights);
         }
 
         public Task<List<Flight>> GetFlightsByAirplaneIdAndTimeInterval(Flight newFlight)
@@ -50,17 +54,17 @@ namespace backend.Repositories.MongoDB
             throw new NotImplementedException();
         }
 
-        public Task<List<Flight>> GetFlightsByDepartureDestinationAndDepartureDate(int departureAirportId, int destinationAirportId, DateOnly departureDate)
+        public Task<List<Flight>> GetFlightsByDepartureDestinationAndDepartureDate(long departureAirportId, long destinationAirportId, DateOnly departureDate)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Flight?> GetFlightWithRelationshipsById(int id)
+        public Task<Flight?> GetFlightWithRelationshipsById(long id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Ticket>> GetTicketsByFlightId(int id)
+        public Task<List<Ticket>> GetTicketsByFlightId(long id)
         {
             throw new NotImplementedException();
         }

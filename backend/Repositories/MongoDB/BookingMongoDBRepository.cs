@@ -16,7 +16,7 @@ namespace backend.Repositories.MongoDB
             throw new NotImplementedException();
         }
 
-        public async Task<List<Booking>> GetBookingsByUserId(int id)
+        public async Task<List<Booking>> GetBookingsByUserId(long id)
         {
             var bookings = await _context.Bookings.Where(booking => booking.User.Id == id)
                 .ToListAsync();

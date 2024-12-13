@@ -2,6 +2,7 @@
 using backend.Dtos;
 using backend.Models;
 using backend.Repositories;
+using backend.Utils;
 
 namespace backend.Services
 {
@@ -61,7 +62,7 @@ namespace backend.Services
                 }
 
                 ticket.FlightClassName = flightClass.Name;
-                ticket.TicketNumber = GenerateUniqueString();
+                ticket.TicketNumber = UniqueSequenceGenerator.GenerateUniqueString(4);
                 ticket.FlightPrice = CalculateTicketPrice(flight, flightClass);
 
                 
@@ -75,7 +76,7 @@ namespace backend.Services
                 return ServiceResult<BookingResponse>.Failure($"Some of the tickets requested are unavailable.");
             }
 
-            bookingProcessedRequest.ConfirmationNumber = GenerateUniqueString();
+            bookingProcessedRequest.ConfirmationNumber = UniqueSequenceGenerator.GenerateUniqueString(4);
             bookingProcessedRequest.UserId = user.Id;
             var createdBooking = await _bookingRepository.CreateBooking(bookingProcessedRequest);
             await _emailService.SendBookingConfirmationMail(bookingProcessedRequest);
@@ -88,25 +89,6 @@ namespace backend.Services
             return ticketPrice;
         }
 
-        private string GenerateUniqueString()
-        {
-            string datePart = DateTime.Now.ToString("yyyyMMdd");
-
-            int randomStringLength = 6;
-            Random random = new Random();
-            string stringPart = "";
-
-            char[] characters = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-                              'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-                              '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-
-            for (int i = 0; i < randomStringLength; i++)
-            {
-                int randomNumber = random.Next(0, characters.Length);
-                stringPart += characters[randomNumber];
-            }
-            string bookingConfirmationNumber = datePart + "-" + stringPart;
-            return bookingConfirmationNumber;
-        }
+        
     }
 }

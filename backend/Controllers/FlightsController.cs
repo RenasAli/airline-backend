@@ -29,7 +29,7 @@ namespace backend.Controllers
 		}
 
 		[HttpGet("{id}")]
-		public async Task<IActionResult> GetFlightById(int id)
+		public async Task<IActionResult> GetFlightById(long id)
 		{
 			try
 			{
@@ -66,8 +66,8 @@ namespace backend.Controllers
 		}
 
 		[HttpGet("search")]
-		public async Task<IActionResult> GetFlightsByDepartureDestinationAndDepartureDate([FromQuery] int departureAirportId,
-																						  [FromQuery] int destinationAirportId,
+		public async Task<IActionResult> GetFlightsByDepartureDestinationAndDepartureDate([FromQuery] long departureAirportId,
+																						  [FromQuery] long destinationAirportId,
 																						  [FromQuery] DateOnly departureDate)
 		{
 			if (departureAirportId == 0 || destinationAirportId == 0 || departureDate == DateOnly.MinValue)
@@ -87,7 +87,7 @@ namespace backend.Controllers
 		}
 
 		[HttpPatch("{id}")]
-		public async Task<IActionResult> UpdateFlight([FromBody]UpdateFlightRequest updateFlightRequest, int id)
+		public async Task<IActionResult> UpdateFlight([FromBody]UpdateFlightRequest updateFlightRequest, long id)
 		{
 			try
 			{
@@ -133,7 +133,7 @@ namespace backend.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpDelete("{Id}")]
-		public async Task<IActionResult> DeleteFlight([FromRoute] int Id)
+		public async Task<IActionResult> DeleteFlight([FromRoute] long Id)
 		{
 			var flight = await _flightService.GetFlightById(Id);
 			if (flight == null)

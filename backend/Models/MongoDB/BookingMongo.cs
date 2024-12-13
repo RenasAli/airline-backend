@@ -7,7 +7,7 @@ namespace backend.Models.MongoDB
     public class BookingMongo
     {
         [BsonId]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("confirmationNumber")]
         public string ConfirmationNumber { get; set; } = null!;
@@ -22,7 +22,7 @@ namespace backend.Models.MongoDB
     public class UserSnapshot
     {
         [BsonElement("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("email")]
         public string Email { get; set; } = null!;
@@ -37,13 +37,13 @@ namespace backend.Models.MongoDB
     public class TicketEmbedded
     {
         [BsonElement("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("price")]
         public decimal Price { get; set; }
 
         [BsonElement("bookingId")]
-        public int TicketsBookingId { get; set; }
+        public long TicketsBookingId { get; set; }
 
         [BsonElement("ticketNumber")]
         public string TicketNumber { get; set; } = null!;
@@ -61,7 +61,7 @@ namespace backend.Models.MongoDB
     public class PassengerEmbedded
     {
         [BsonElement("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("firstName")]
         public string FirstName { get; set; } = null!;
@@ -76,7 +76,7 @@ namespace backend.Models.MongoDB
     public class FlightClassSnapshot
     {
         [BsonElement("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("name")]
         public FlightClassName Name { get; set; }
@@ -88,7 +88,7 @@ namespace backend.Models.MongoDB
     public class FlightSnapShot
     {
         [BsonElement("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("flightCode")]
         public string FlightCode { get; set; }

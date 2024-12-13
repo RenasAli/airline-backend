@@ -10,7 +10,7 @@ namespace backend.Models.MongoDB
     public class FlightMongo
     {
         [BsonId]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("flightCode")]
         public string FlightCode { get; set; } = null!;
@@ -50,12 +50,15 @@ namespace backend.Models.MongoDB
 
         [BsonElement("flightsAirplane")]
         public AirplaneSnapshot FlightsAirplane { get; set; } = null!;
+
+        [BsonElement("idempotencyKey")]
+        public string IdempotencyKey { get; set; }
     }
 
     public class AirportSnapshot
     {
         [BsonElement("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("name")]
         public string Name { get; set; } = null!;
@@ -70,7 +73,7 @@ namespace backend.Models.MongoDB
     public class AirlineSnapshot
     {
         [BsonElement("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("name")]
         public string Name { get; set; } = null!;
@@ -79,7 +82,7 @@ namespace backend.Models.MongoDB
     public class AirplaneSnapshot
     {
         [BsonElement("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("name")]
         public string Name { get; set; } = null!;
@@ -97,7 +100,7 @@ namespace backend.Models.MongoDB
     public class CitySnapshot
     {
         [BsonElement("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("name")]
         public string Name { get; set; } = null!;
@@ -109,7 +112,7 @@ namespace backend.Models.MongoDB
     public class StateSnapshot
     {
         [BsonElement("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [BsonElement("code")]
         public string Code { get; set; } = null!;

@@ -2,13 +2,13 @@
 {
     public class FlightCreationRequest
     {
-        public int AirlineId { get; set; }
+        public long AirlineId { get; set; }
 
-        public int AirplaneId { get; set; }
+        public long AirplaneId { get; set; }
 
-        public int DepartureAirportId { get; set; }
+        public long DepartureAirportId { get; set; }
 
-        public int ArrivalAirportId { get; set; }
+        public long ArrivalAirportId { get; set; }
 
         public DateTime DepartureDateTime { get; set; }
 

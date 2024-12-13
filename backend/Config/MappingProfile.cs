@@ -74,12 +74,8 @@ namespace backend.Config
                 .ForMember(dest => dest.ArrivalPortNavigation, opt => opt.MapFrom(src => src.ArrivalPort))
                 .ForMember(dest => dest.DeparturePortNavigation, opt => opt.MapFrom(src => src.DeparturePort));
 
-            CreateMap<User, UserMongo>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.MySQLKey, opt => opt.MapFrom(src => src.Id));
-
-            CreateMap<UserMongo, User>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.MySQLKey));
+            CreateMap<User, UserMongo>();
+            CreateMap<UserMongo, User>();
 
             CreateMap<FlightClassMongo, FlightClass>();
 
@@ -152,4 +148,3 @@ namespace backend.Config
         }
     }
 }
-			

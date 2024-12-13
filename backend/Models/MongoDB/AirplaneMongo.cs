@@ -8,21 +8,22 @@ namespace backend.Models.MongoDB
     public class AirplaneMongo
     {
         [BsonId]
-        public int Id { get; set; }
+        public long Id { get; set; }
+
 
         [BsonElement("name")]
         public string Name { get; set; }
 
         [BsonElement("airlineId")]
-        public int AirplanesAirlineId { get; set; }
+        public long AirplanesAirlineId { get; set; }
 
         [BsonElement("economyClassSeats")]
-        public int EconomyClassSeats { get; set; }
+        public long EconomyClassSeats { get; set; }
 
         [BsonElement("businessClassSeats")]
-        public int BusinessClassSeats { get; set; }
+        public long BusinessClassSeats { get; set; }
 
         [BsonElement("firstClassSeats")]
-        public int FirstClassSeats { get; set; }
+        public long FirstClassSeats { get; set; }
     }
 }

@@ -10,11 +10,10 @@ namespace backend.Repositories.MongoDB
         private readonly MongoDBContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Airplane?> GetAirplaneById(int id)
+        public async Task<Airplane?> GetAirplaneById(long id)
         {
             var airplane = await _context.Airplanes.FindAsync(id);
             var mappedAirplane = _mapper.Map<Airplane>(airplane);
-            Console.WriteLine("IN MONGODBREPO " + mappedAirplane.Id);
             return mappedAirplane;
         }
 

@@ -59,6 +59,7 @@ namespace backend.Database.Data.MongoDB
                         EconomyClassSeatsAvailable = 100,
                         BusinessClassSeatsAvailable = 40,
                         FirstClassSeatsAvailable = 10,
+                        IdempotencyKey = "123344324",
                         FlightsAirline = new()
                         {
                             Id = 1,
@@ -131,7 +132,7 @@ namespace backend.Database.Data.MongoDB
                 {
                     new()
                     {
-                        MySQLKey = 1,
+                        Id = 1,
                         Email = "customer@example.com",
                         Password = "AQAAAAIAAYagAAAAEJvAdN3g69LF6cuKWK/xIHyUyz1qtNoVCMgKIlSd5oTPwk+7/A+qEAcxQJ2B+FvghQ==",
                         Role = UserRole.Admin,
