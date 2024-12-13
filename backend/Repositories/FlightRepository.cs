@@ -94,7 +94,7 @@ namespace backend.Repositories
             command.Parameters.Add(new MySqlParameter("@idempotencyKey", flight.IdempotencyKey));
 
             // Output parameter
-            var newFlightIdParam = new MySqlParameter("@newFlightId", MySqlDbType.Int32)
+            var newFlightIdParam = new MySqlParameter("@newFlightId", MySqlDbType.Int64)
             {
                 Direction = ParameterDirection.Output
             };
@@ -103,7 +103,7 @@ namespace backend.Repositories
             // Execute the command that calls the "CheckAndInsertFlight" stored procedure.
             await command.ExecuteNonQueryAsync();
 
-            flight.Id = (int)newFlightIdParam.Value;
+            flight.Id = (long)newFlightIdParam.Value;
 
             return flight;
         }
