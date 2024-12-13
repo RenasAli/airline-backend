@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using backend.Database;
 using backend.Models;
+using backend.Models.MongoDB;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace backend.Repositories.MongoDB
 {
@@ -54,20 +56,34 @@ namespace backend.Repositories.MongoDB
             throw new NotImplementedException();
         }
 
-        public Task<List<Flight>> GetFlightsByDepartureDestinationAndDepartureDate(long departureAirportId, long destinationAirportId, DateOnly departureDate)
+        public async Task<List<Flight>> GetFlightsByDepartureDestinationAndDepartureDate(long departureAirportId, long destinationAirportId, DateOnly departureDate)
         {
-            throw new NotImplementedException();
+            var flights = await _context.Flights
+                .Where(flight =>
+                       flight.DeparturePort.Id == departureAirportId &&
+                       flight.ArrivalPort.Id == destinationAirportId &&
+                       DateOnly.FromDateTime(flight.DepartureTime) == departureDate
+                    )
+                .ToListAsync();
+            return _mapper.Map<List<Flight>>(flights);
         }
 
-        public Task<Flight?> GetFlightWithRelationshipsById(long id)
+        public async Task<Flight?> GetFlightWithRelationshipsById(long id)
         {
-            throw new NotImplementedException();
+            var flight = await _context.Flights.FindAsync(id);
+            return _mapper.Map<Flight>(flight);
         }
 
-        public Task<List<Ticket>> GetTicketsByFlightId(long id)
+        public async Task<List<Ticket>> GetTicketsByFlightId(long flightId)
         {
-            throw new NotImplementedException();
+            var tickets = await _context.Bookings
+                .Where(b => b.Tickets.Any(t => t.Flight.Id == flightId))
+                .SelectMany(b => b.Tickets.Where(t => t.Flight.Id == flightId))
+                .ToListAsync();
+
+            return _mapper.Map<List<Ticket>>(tickets);
         }
+
 
         public Task<bool> UpdateFlight(Flight flight)
         {

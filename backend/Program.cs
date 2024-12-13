@@ -13,6 +13,7 @@ using System.Text;
 using Sentry.Extensibility;
 using backend.Database.Data.MongoDB;
 using backend.Repositories.MongoDB;
+using MongoDB.Driver;
 
 namespace backend
 {
@@ -137,6 +138,12 @@ namespace backend
 					builder.Services.AddScoped<IFlightRepository, FlightsMongoDBRepository>();
 					builder.Services.AddScoped<IBookingRepository, BookingMongoDBRepository>();
                     builder.Services.AddScoped<IUserRepository, UserMongoDBRepository>();
+
+					// Register IMongoclient for the MongoDB seeder
+                    builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
+                    {
+                        return new MongoClient(mongoDbConnectionString);
+                    });
 
                     break;
                 case "Neo4j":

@@ -1,17 +1,24 @@
 ﻿using backend.Models;
 using backend.Models.MongoDB;
-using MongoDB.Bson;
+using MongoDB.Driver;
 
 
 namespace backend.Database.Data.MongoDB
 {
-    public class MongoDBSeeder(MongoDBContext context)
+    public class MongoDBSeeder(MongoDBContext context, IMongoClient client)
     {
 
         private readonly MongoDBContext _context = context;
+        private readonly IMongoClient _client = client;
 
         public void Seed()
         {
+            var database = _client.GetDatabase("mydatabase");
+            var collection = database.GetCollection<BookingMongo>("bookings");
+            // Create multikey index tickets.flight.id - is used when you need to find tickets by flight id (when updating a flight for example)
+            var indexKeysDefinition = Builders<BookingMongo>.IndexKeys.Ascending("tickets.flight.id");
+            collection.Indexes.CreateOne(new CreateIndexModel<BookingMongo>(indexKeysDefinition));
+
             if (!_context.Airplanes.Any())
             {
                 var airplanes = new List<AirplaneMongo>()

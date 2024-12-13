@@ -1,7 +1,5 @@
 ﻿using backend.Models.MongoDB;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver;
-using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace backend.Database
 {
@@ -19,10 +17,6 @@ namespace backend.Database
         public DbSet<FlightClassMongo> FlightClasses { get; set; }
 
         public DbSet<BookingMongo> Bookings { get; set; }
-
-        public static MongoDBContext Create(IMongoDatabase database) =>
-        new(new DbContextOptionsBuilder<MongoDBContext>()
-            .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)
-            .Options);
+        }
     }
-}
+
