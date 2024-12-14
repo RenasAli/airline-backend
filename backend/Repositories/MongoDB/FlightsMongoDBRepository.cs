@@ -21,7 +21,7 @@ namespace backend.Repositories.MongoDB
             return null;
         }
 
-        public Task<Flight> Delete(long id)
+        public Task<Flight> Delete(long id, string deletedBy)
         {
             throw new NotImplementedException();
         }

@@ -109,9 +109,12 @@ namespace backend.Repositories
             return flight;
         }
 
-        public async Task<Flight> Delete(long id)
+        public async Task<Flight> Delete(long id, string deletedBy)
         {
             var transaction = await _context.Database.BeginTransactionAsync();
+
+            // set a session variable that the "flights_after_delete" trigger can access
+            await _context.Database.ExecuteSqlRawAsync("SET @deleted_by_email = {0}", deletedBy);
 
             var flight = await _context.Flights
                 .Include(f => f.Tickets)

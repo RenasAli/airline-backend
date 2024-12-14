@@ -14,7 +14,7 @@ namespace backend.Repositories
         Task<List<Flight>> GetFlightsByAirplaneIdAndTimeInterval(Flight newFlight);
         Task<Flight> Create(Flight flight);
 
-        Task<Flight> Delete(long id);
+        Task<Flight> Delete(long id, string deletedBy);
         Task<List<Flight>> GetFlightsByDepartureDestinationAndDepartureDate(long departureAirportId, long destinationAirportId, DateOnly departureDate);
 
         Task<List<Flight>> GetFlightsByAirplaneId(long airplaneId);

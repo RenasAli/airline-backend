@@ -139,14 +139,15 @@ namespace backend.Controllers
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteFlight([FromRoute] long id)
 		{
-			try
+            var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            try
 			{
                 var flight = await _flightService.GetFlightById(id);
                 if (flight == null)
                 {
                     return NotFound(new { message = $"Invalid flight ID provided. Flight with ID: {id} does not exist." });
                 }
-                await _flightService.CancelFlight(id);
+                await _flightService.CancelFlight(id, emailClaim?.Value);
 				return Ok(new {message = $"Flight with ID: {id} was deleted successfully!" });
 			}
 			catch (Exception ex)

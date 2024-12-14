@@ -139,9 +139,9 @@ namespace backend.Services
             return false;
         }
         
-        public async Task CancelFlight(long flightId)
+        public async Task CancelFlight(long flightId, string canceledBy)
         {
-            var deletedFlight = await _flightRepository.Delete(flightId);
+            var deletedFlight = await _flightRepository.Delete(flightId, canceledBy);
             if (deletedFlight == null)
             {
                 throw new Exception("Flight could not be found."); // Could potentially define more specific exceptions (EntityNotfoundException)

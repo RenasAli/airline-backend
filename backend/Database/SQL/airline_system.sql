@@ -207,7 +207,6 @@ CREATE TABLE IF NOT EXISTS `airline_project`.`tickets` (
     REFERENCES `airline_project`.`flight_classes` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb3;
 
-
 -- Create stored procedures
 
 -- CheckAndInsertFlight stored procedure
@@ -359,19 +358,19 @@ FOR EACH ROW
 BEGIN
     INSERT INTO `airline_project`.`flights_audit` (`flight_id`, `column_name`, `old_value`, `operation`, `done_by`)
     VALUES 
-        (OLD.id, 'flight_code', OLD.flight_code, 'DELETE', OLD.updated_by),
-        (OLD.id, 'departure_port', OLD.departure_port, 'DELETE', OLD.updated_by),
-        (OLD.id, 'arrival_port', OLD.arrival_port, 'DELETE', OLD.updated_by),
-        (OLD.id, 'departure_time', OLD.departure_time, 'DELETE', OLD.updated_by),
-        (OLD.id, 'completion_time', OLD.completion_time, 'DELETE', OLD.updated_by),
-        (OLD.id, 'travel_time', OLD.travel_time, 'DELETE', OLD.updated_by),
-        (OLD.id, 'price', OLD.price, 'DELETE', OLD.updated_by),
-        (OLD.id, 'kilometers', OLD.kilometers, 'DELETE', OLD.updated_by),
-        (OLD.id, 'economy_class_seats_available', OLD.economy_class_seats_available, 'DELETE', OLD.updated_by),
-        (OLD.id, 'business_class_seats_available', OLD.business_class_seats_available, 'DELETE', OLD.updated_by),
-        (OLD.id, 'first_class_seats_available', OLD.first_class_seats_available, 'DELETE', OLD.updated_by),
-        (OLD.id, 'flights_airline_id', OLD.flights_airline_id, 'DELETE', OLD.updated_by),
-        (OLD.id, 'flights_airplane_id', OLD.flights_airplane_id, 'DELETE', OLD.updated_by);
+        (OLD.id, 'flight_code', OLD.flight_code, 'DELETE', @deleted_by_email),
+        (OLD.id, 'departure_port', OLD.departure_port, 'DELETE', @deleted_by_email),
+        (OLD.id, 'arrival_port', OLD.arrival_port, 'DELETE', @deleted_by_email),
+        (OLD.id, 'departure_time', OLD.departure_time, 'DELETE', @deleted_by_email),
+        (OLD.id, 'completion_time', OLD.completion_time, 'DELETE', @deleted_by_email),
+        (OLD.id, 'travel_time', OLD.travel_time, 'DELETE', @deleted_by_email),
+        (OLD.id, 'price', OLD.price, 'DELETE', @deleted_by_email),
+        (OLD.id, 'kilometers', OLD.kilometers, 'DELETE', @deleted_by_email),
+        (OLD.id, 'economy_class_seats_available', OLD.economy_class_seats_available, 'DELETE', @deleted_by_email),
+        (OLD.id, 'business_class_seats_available', OLD.business_class_seats_available, 'DELETE', @deleted_by_email),
+        (OLD.id, 'first_class_seats_available', OLD.first_class_seats_available, 'DELETE', @deleted_by_email),
+        (OLD.id, 'flights_airline_id', OLD.flights_airline_id, 'DELETE', @deleted_by_email),
+        (OLD.id, 'flights_airplane_id', OLD.flights_airplane_id, 'DELETE', @deleted_by_email);
 END$$
 DELIMITER ;
 
