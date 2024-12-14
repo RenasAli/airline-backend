@@ -132,14 +132,18 @@ namespace backend
                     builder.Services.AddScoped<IFlightRepository, FlightRepository>();
                     builder.Services.AddScoped<IBookingRepository, BookingRepository>();
                     builder.Services.AddScoped<IUserRepository, UserRepository>();
+                    builder.Services.AddScoped<IAirportRepository, AirportRepository>();
+                    builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
                     break;
 				case "MongoDB":
                     builder.Services.AddScoped<IAirplaneRepository, AirplaneMongoDBRepository>();
 					builder.Services.AddScoped<IFlightRepository, FlightsMongoDBRepository>();
 					builder.Services.AddScoped<IBookingRepository, BookingMongoDBRepository>();
                     builder.Services.AddScoped<IUserRepository, UserMongoDBRepository>();
+                    builder.Services.AddScoped<IAirportRepository, AirportMongoDBRepository>();
+                    builder.Services.AddScoped<IAirlineRepository, AirlineMongoDBRepository>();
 
-					// Register IMongoclient for the MongoDB seeder
+                    // Register IMongoclient for the MongoDB seeder
                     builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
                     {
                         return new MongoClient(mongoDbConnectionString);
@@ -156,8 +160,7 @@ namespace backend
 			// Register repositories for the DI container
 
             
-            builder.Services.AddScoped<IAirportRepository, AirportRepository>();
-            builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
+            
             
 
             // Add services to the container.

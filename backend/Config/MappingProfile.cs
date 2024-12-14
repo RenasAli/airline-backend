@@ -35,6 +35,8 @@ namespace backend.Config
             CreateMap<Booking, BookingResponse>();
 
             // Mappings from MongoDB entities to the "shared" models
+            CreateMap<AirlineMongo, Airline>();
+            CreateMap<AirportMongo, Airport>();
             CreateMap<AirplaneMongo, Airplane>();
 
             CreateMap<AirlineSnapshot, Airline>()

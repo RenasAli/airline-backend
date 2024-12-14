@@ -21,6 +21,16 @@ namespace backend.Database.Data.MongoDB
 
             if (!_context.Airplanes.Any())
             {
+
+                var airlines = new List<AirlineMongo>()
+                {
+                    new()
+                    {
+                        Id = 1,
+                        Name = "Delta Airlines"
+                    }
+                };
+
                 var airplanes = new List<AirplaneMongo>()
                 {
                   new()
@@ -132,7 +142,24 @@ namespace backend.Database.Data.MongoDB
                              Code = "CA"
                          }
                       }
+                  },
+                  new()
+                  {
+                      Id = 2,
+                      Name = "JFK International Airport",
+                      Code = "JFK",
+                      City = new()
+                      {
+                         Id = 2,
+                         Name = "New York",
+                         State = new()
+                         {
+                             Id = 2,
+                             Code = "NY"
+                         }
+                      }
                   }
+
                 };
 
                 var users = new List<UserMongo>()
@@ -140,7 +167,7 @@ namespace backend.Database.Data.MongoDB
                     new()
                     {
                         Id = 1,
-                        Email = "customer@example.com",
+                        Email = "admin@example.com",
                         Password = "AQAAAAIAAYagAAAAEJvAdN3g69LF6cuKWK/xIHyUyz1qtNoVCMgKIlSd5oTPwk+7/A+qEAcxQJ2B+FvghQ==",
                         Role = UserRole.Admin,
                     }
@@ -241,6 +268,7 @@ namespace backend.Database.Data.MongoDB
     }
                 };
 
+                _context.Airlines.AddRange(airlines);
                 _context.Bookings.Add(booking);
                 _context.Users.AddRange(users);
                 _context.Airplanes.AddRange(airplanes);

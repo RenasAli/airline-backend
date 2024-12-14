@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using backend.Database;
 using backend.Models;
-using backend.Models.MongoDB;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 
@@ -11,10 +10,15 @@ namespace backend.Repositories.MongoDB
     {
         private readonly MongoDBContext _context = context;
         private readonly IMapper _mapper = mapper;
-        public Task<Flight> Create(Flight flight)
+        public async Task<Flight> Create(Flight flight)
         {
-            throw new NotImplementedException();
-            
+            var overLappingFlights = await GetFlightsByAirplaneIdAndTimeInterval(flight);
+            if (overLappingFlights.Any())
+            {
+                throw new InvalidOperationException("There are 1 or more overlapping flights.");
+            }
+
+            return null;
         }
 
         public Task<Flight> Delete(long id)
@@ -30,7 +34,8 @@ namespace backend.Repositories.MongoDB
 
         public async Task<Flight?> GetFlightById(long id)
         {
-            throw new NotImplementedException();
+            var flight = await _context.Flights.FindAsync(id);
+            return _mapper.Map<Flight>(flight);
         }
 
         public async Task<Flight?> GetFlightByIdempotencyKey(string idempotencyKey)
@@ -51,9 +56,14 @@ namespace backend.Repositories.MongoDB
             return _mapper.Map<List<Flight>>(flights);
         }
 
-        public Task<List<Flight>> GetFlightsByAirplaneIdAndTimeInterval(Flight newFlight)
+        public async Task<List<Flight>> GetFlightsByAirplaneIdAndTimeInterval(Flight newFlight)
         {
-            throw new NotImplementedException();
+            var flights = await _context.Flights
+                .Where(flight => flight.FlightsAirplane.Id == newFlight.FlightsAirplaneId
+                        && flight.DepartureTime < newFlight.CompletionTime
+                        && flight.CompletionTime > newFlight.DepartureTime)
+                .ToListAsync();
+            return _mapper.Map<List<Flight>>(flights);
         }
 
         public async Task<List<Flight>> GetFlightsByDepartureDestinationAndDepartureDate(long departureAirportId, long destinationAirportId, DateOnly departureDate)
