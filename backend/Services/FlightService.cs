@@ -124,6 +124,7 @@ namespace backend.Services
         public async Task<bool> UpdateFlight(UpdateFlightRequest updateFlightRequest, Flight flight)
         {
             flight.DepartureTime = updateFlightRequest.DepartureDateTime;
+            flight.UpdatedBy = updateFlightRequest?.UpdatedBy;
             flight.CompletionTime = CalculateFlightCompletionTime(flight.DepartureTime, flight.TravelTime);
             bool updatedSuccessfully = await _flightRepository.UpdateFlight(flight);
             if (updatedSuccessfully)

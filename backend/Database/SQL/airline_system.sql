@@ -129,6 +129,8 @@ CREATE TABLE IF NOT EXISTS `airline_project`.`flights` (
   `flights_airline_id` BIGINT NOT NULL,
   `flights_airplane_id` BIGINT NOT NULL,
   `idempotency_key` VARCHAR(60) NOT NULL,
+  `created_by` VARCHAR(100) NOT NULL,
+  `updated_by` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `departure_port_idx` (`departure_port` ASC) VISIBLE,
   INDEX `arrival_port_idx` (`arrival_port` ASC) VISIBLE,
@@ -146,6 +148,22 @@ CREATE TABLE IF NOT EXISTS `airline_project`.`flights` (
   CONSTRAINT `flights_airplane_id`
     FOREIGN KEY (`flights_airplane_id`)
     REFERENCES `airline_project`.`airplanes` (`id`)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb3;
+
+-- -----------------------------------------------------
+-- Table `airline_project`.`flights_audit`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `airline_project`.`flights_audit` (
+    `audit_id` BIGINT NOT NULL AUTO_INCREMENT,
+    `flight_id` BIGINT NOT NULL,
+    `column_name` VARCHAR(255) NOT NULL,
+    `old_value` TEXT NULL,
+    `new_value` TEXT NULL,
+    `operation` ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+    `done_by` VARCHAR(100) NULL,
+    `operation_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`audit_id`),
+    INDEX `flight_id_idx` (`flight_id` ASC)
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb3;
 
 -- -----------------------------------------------------
@@ -209,6 +227,7 @@ CREATE DEFINER=`root`@`%` PROCEDURE `CheckAndInsertFlight`(
     IN firstClassSeats INT,
     IN airlineId BIGINT,
     IN idempotencyKey VARCHAR(60),
+    IN createdBy VARCHAR(100),
     OUT newFlightId BIGINT
 )
 BEGIN
@@ -250,7 +269,9 @@ BEGIN
             flights_airline_id,
             flights_airplane_id,
             completion_time,
-            idempotency_key
+            idempotency_key,
+            created_by,
+            updated_by
         )
         VALUES 
         (
@@ -267,7 +288,9 @@ BEGIN
             airlineId,
             airplaneId,
             completionTime,
-            idempotencyKey
+            idempotencyKey,
+            createdBy,
+            createdBy
         );
 
         -- Get the ID of the newly inserted flight
@@ -279,6 +302,79 @@ BEGIN
 END$$
 DELIMITER ;
 -- CheckAndInsertFlight stored procedure end
+
+-- Triggers for flight inserts, updates and deletes
+
+-- Insert trigger
+DELIMITER $$
+CREATE TRIGGER flights_after_insert
+AFTER INSERT ON `airline_project`.`flights`
+FOR EACH ROW
+BEGIN
+    INSERT INTO `airline_project`.`flights_audit` (`flight_id`, `column_name`, `new_value`, `operation`, `done_by`)
+    VALUES 
+        (NEW.id, 'flight_code', NEW.flight_code, 'INSERT', NEW.created_by),
+        (NEW.id, 'departure_port', NEW.departure_port, 'INSERT', NEW.created_by),
+        (NEW.id, 'arrival_port', NEW.arrival_port, 'INSERT', NEW.created_by),
+        (NEW.id, 'departure_time', NEW.departure_time, 'INSERT', NEW.created_by),
+        (NEW.id, 'completion_time', NEW.completion_time, 'INSERT', NEW.created_by),
+        (NEW.id, 'travel_time', NEW.travel_time, 'INSERT', NEW.created_by),
+        (NEW.id, 'price', NEW.price, 'INSERT', NEW.created_by),
+        (NEW.id, 'kilometers', NEW.kilometers, 'INSERT', NEW.created_by),
+        (NEW.id, 'economy_class_seats_available', NEW.economy_class_seats_available, 'INSERT', NEW.created_by),
+        (NEW.id, 'business_class_seats_available', NEW.business_class_seats_available, 'INSERT', NEW.created_by),
+        (NEW.id, 'first_class_seats_available', NEW.first_class_seats_available, 'INSERT', NEW.created_by),
+        (NEW.id, 'flights_airline_id', NEW.flights_airline_id, 'INSERT', NEW.created_by),
+        (NEW.id, 'flights_airplane_id', NEW.flights_airplane_id, 'INSERT', NEW.created_by);
+END$$
+DELIMITER ;
+
+-- Update trigger
+DELIMITER $$
+CREATE TRIGGER flights_after_update
+AFTER UPDATE ON `airline_project`.`flights`
+FOR EACH ROW
+BEGIN
+    IF OLD.departure_time != NEW.departure_time THEN
+        INSERT INTO `airline_project`.`flights_audit` 
+            (`flight_id`, `column_name`, `old_value`, `new_value`, `operation`, `done_by`)
+        VALUES 
+            (NEW.id, 'departure_time', OLD.departure_time, NEW.departure_time, 'UPDATE', NEW.updated_by);
+    END IF;
+
+    IF OLD.completion_time != NEW.completion_time THEN
+        INSERT INTO `airline_project`.`flights_audit` 
+            (`flight_id`, `column_name`, `old_value`, `new_value`, `operation`, `done_by`)
+        VALUES 
+            (NEW.id, 'completion_time', OLD.completion_time, NEW.completion_time, 'UPDATE', NEW.updated_by);
+    END IF;
+END$$
+DELIMITER ;
+
+-- Delete trigger
+DELIMITER $$
+CREATE TRIGGER flights_after_delete
+AFTER DELETE ON `airline_project`.`flights`
+FOR EACH ROW
+BEGIN
+    INSERT INTO `airline_project`.`flights_audit` (`flight_id`, `column_name`, `old_value`, `operation`, `done_by`)
+    VALUES 
+        (OLD.id, 'flight_code', OLD.flight_code, 'DELETE', OLD.updated_by),
+        (OLD.id, 'departure_port', OLD.departure_port, 'DELETE', OLD.updated_by),
+        (OLD.id, 'arrival_port', OLD.arrival_port, 'DELETE', OLD.updated_by),
+        (OLD.id, 'departure_time', OLD.departure_time, 'DELETE', OLD.updated_by),
+        (OLD.id, 'completion_time', OLD.completion_time, 'DELETE', OLD.updated_by),
+        (OLD.id, 'travel_time', OLD.travel_time, 'DELETE', OLD.updated_by),
+        (OLD.id, 'price', OLD.price, 'DELETE', OLD.updated_by),
+        (OLD.id, 'kilometers', OLD.kilometers, 'DELETE', OLD.updated_by),
+        (OLD.id, 'economy_class_seats_available', OLD.economy_class_seats_available, 'DELETE', OLD.updated_by),
+        (OLD.id, 'business_class_seats_available', OLD.business_class_seats_available, 'DELETE', OLD.updated_by),
+        (OLD.id, 'first_class_seats_available', OLD.first_class_seats_available, 'DELETE', OLD.updated_by),
+        (OLD.id, 'flights_airline_id', OLD.flights_airline_id, 'DELETE', OLD.updated_by),
+        (OLD.id, 'flights_airplane_id', OLD.flights_airplane_id, 'DELETE', OLD.updated_by);
+END$$
+DELIMITER ;
+
 
 
 -- -----------------------------------------------------

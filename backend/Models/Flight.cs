@@ -34,6 +34,10 @@ public partial class Flight
     public long FlightsAirplaneId { get; set; }
 
     public string IdempotencyKey { get; set; }
+
+    public string? CreatedBy { get; set; }
+
+    public string? UpdatedBy { get; set; }
     [JsonIgnore]
     public virtual Airport ArrivalPortNavigation { get; set; } = null!;
 

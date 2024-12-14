@@ -2,6 +2,7 @@ using backend.Dtos;
 using backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace backend.Controllers
 {
@@ -52,8 +53,10 @@ namespace backend.Controllers
 		[HttpPost]
 		public async Task<IActionResult> AddFlight([FromBody] FlightCreationRequest flightCreationRequest)
 		{
-			try
+            var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            try
 			{
+				flightCreationRequest.CreatedBy = emailClaim?.Value;
 				var createdFlight = await _flightService.CreateFlight(flightCreationRequest);
 				return StatusCode(StatusCodes.Status201Created, new { message = "Flight was created successfully!", createdFlight });
 			}
@@ -89,9 +92,10 @@ namespace backend.Controllers
 		[HttpPatch("{id}")]
 		public async Task<IActionResult> UpdateFlight([FromBody]UpdateFlightRequest updateFlightRequest, long id)
 		{
-			try
+            var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            try
 			{
-                Console.WriteLine(updateFlightRequest.DepartureDateTime);
+				updateFlightRequest.UpdatedBy = emailClaim?.Value;
                 var existingFlight = await _flightService.GetFlightById(id);
                 if (existingFlight == null)
                 {
@@ -132,19 +136,18 @@ namespace backend.Controllers
 		}
 
 		[Authorize(Roles = "Admin")]
-		[HttpDelete("{Id}")]
-		public async Task<IActionResult> DeleteFlight([FromRoute] long Id)
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteFlight([FromRoute] long id)
 		{
-			var flight = await _flightService.GetFlightById(Id);
-			if (flight == null)
-			{
-    			return NotFound(new { message = $"Invalid flight ID provided. Flight with ID: {Id} does not exist." });
-			}
-
 			try
 			{
-				await _flightService.CancelFlight(Id);
-				return Ok(new {message = $"Flight with ID: {Id} was deleted successfully!" });
+                var flight = await _flightService.GetFlightById(id);
+                if (flight == null)
+                {
+                    return NotFound(new { message = $"Invalid flight ID provided. Flight with ID: {id} does not exist." });
+                }
+                await _flightService.CancelFlight(id);
+				return Ok(new {message = $"Flight with ID: {id} was deleted successfully!" });
 			}
 			catch (Exception ex)
 			{

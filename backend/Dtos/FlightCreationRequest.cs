@@ -15,5 +15,7 @@
         public double Price { get; set; }
 
         public string IdempotencyKey { get; set; }
+
+        public string? CreatedBy { get; set; }
     }
 }

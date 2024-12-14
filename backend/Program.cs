@@ -119,8 +119,7 @@ namespace backend
 	  // Add HTTP client for Google Distance API
 	  builder.Services.AddHttpClient<IDistanceApiService, DistanceApiService>();
 
-			// Register data seeders
-			builder.Services.AddTransient<MongoDBSeeder>();
+			
 
 			// Register repository dependency injection depending on database type
 			string? databaseType = Environment.GetEnvironmentVariable("DB_TYPE");
@@ -142,6 +141,9 @@ namespace backend
                     builder.Services.AddScoped<IUserRepository, UserMongoDBRepository>();
                     builder.Services.AddScoped<IAirportRepository, AirportMongoDBRepository>();
                     builder.Services.AddScoped<IAirlineRepository, AirlineMongoDBRepository>();
+
+                    // Register MongoDB seeder
+                    builder.Services.AddTransient<MongoDBSeeder>();
 
                     // Register IMongoclient for the MongoDB seeder
                     builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
@@ -208,12 +210,17 @@ namespace backend
 			app.UseAuthorization();
 			app.MapControllers();
 
-            // Seed the MongoDB database
-            using (var scope = app.Services.CreateScope())
-            {
-                var mongoSeeder = scope.ServiceProvider.GetRequiredService<MongoDBSeeder>();
-                mongoSeeder.Seed();
+			if (databaseType == "MongoDB")
+			{
+				// Seed the MongoDB database
+				using (var scope = app.Services.CreateScope())
+                {
+                    var mongoSeeder = scope.ServiceProvider.GetRequiredService<MongoDBSeeder>();
+                    mongoSeeder.Seed();
+                }
+
             }
+            
 
             app.Run();
 		}

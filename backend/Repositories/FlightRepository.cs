@@ -92,6 +92,7 @@ namespace backend.Repositories
             command.Parameters.Add(new MySqlParameter("@firstClassSeats", flight.FirstClassSeatsAvailable));
             command.Parameters.Add(new MySqlParameter("@airlineId", flight.FlightsAirlineId));
             command.Parameters.Add(new MySqlParameter("@idempotencyKey", flight.IdempotencyKey));
+            command.Parameters.Add(new MySqlParameter("@createdBy", flight.CreatedBy));
 
             // Output parameter
             var newFlightIdParam = new MySqlParameter("@newFlightId", MySqlDbType.Int64)
@@ -110,7 +111,7 @@ namespace backend.Repositories
 
         public async Task<Flight> Delete(long id)
         {
-            var transaction = _context.Database.BeginTransaction();
+            var transaction = await _context.Database.BeginTransactionAsync();
 
             var flight = await _context.Flights
                 .Include(f => f.Tickets)
