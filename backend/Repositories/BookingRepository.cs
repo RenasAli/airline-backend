@@ -36,7 +36,7 @@ namespace backend.Repositories
 
         public async Task<Booking> CreateBooking(BookingProcessedRequest request)
         {
-            var transaction = _context.Database.BeginTransaction();
+            var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
