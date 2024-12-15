@@ -8,7 +8,7 @@ OUTPUT_DIR="../backup/$(date +%Y-%m-%d)"
 mkdir -p $OUTPUT_DIR
 
 # Kør mongodump for at tage backup
-mongodump --uri=$MONGODB_CONNECTION_STRING --out=$OUTPUT_DIR
+mongodump --uri="mongodb+srv://airline:eASxfB2IYqazAy4L@airline-backend.s7zn4.mongodb.net/?retryWrites=true&w=majority&appName=airline-backend" --out=$OUTPUT_DIR
 
 # Kontroller, om dump lykkedes
 if [ $? -eq 0 ]; then
