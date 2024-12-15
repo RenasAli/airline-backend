@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace backend.Models;
@@ -34,10 +35,13 @@ public partial class Flight
     public long FlightsAirplaneId { get; set; }
 
     public string IdempotencyKey { get; set; }
-
     public string? CreatedBy { get; set; }
 
     public string? UpdatedBy { get; set; }
+
+    [ConcurrencyCheck]
+    public int Version { get; set; }
+
     [JsonIgnore]
     public virtual Airport ArrivalPortNavigation { get; set; } = null!;
 

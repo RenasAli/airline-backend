@@ -131,6 +131,7 @@ CREATE TABLE IF NOT EXISTS `airline_project`.`flights` (
   `idempotency_key` VARCHAR(60) NOT NULL,
   `created_by` VARCHAR(100) NOT NULL,
   `updated_by` VARCHAR(100) NOT NULL,
+  `version` INT NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   INDEX `departure_port_idx` (`departure_port` ASC) VISIBLE,
   INDEX `arrival_port_idx` (`arrival_port` ASC) VISIBLE,
