@@ -174,16 +174,24 @@ namespace backend.Repositories
 
         public async Task<List<Flight>> GetFlightsByDepartureDestinationAndDepartureDate(long departureAirportId, long destinationAirportId, DateOnly departureDate)
         {
+            // Define the start and end of the day.
+            DateTime startOfDay = departureDate.ToDateTime(TimeOnly.MinValue);
+            DateTime endOfDay = departureDate.ToDateTime(TimeOnly.MaxValue);
+
             var flights = await _context.Flights
                 .Where(flight =>
                        flight.DeparturePort == departureAirportId &&
                        flight.ArrivalPort == destinationAirportId &&
-                       DateOnly.FromDateTime(flight.DepartureTime) == departureDate
+                       // Flights departing on or after the start of the day.
+                       flight.DepartureTime >= startOfDay &&
+                       // Flights departing on or before the end of the day.
+                       flight.DepartureTime <= endOfDay      
                     )
                 .Include(flight => flight.FlightsAirline)
                 .Include(flight => flight.DeparturePortNavigation)
                 .Include(flight => flight.ArrivalPortNavigation)
                 .ToListAsync();
+
             return flights;
         }
 
