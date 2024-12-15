@@ -70,6 +70,8 @@ namespace backend.Repositories
 
                     var flight = await _context.Flights.FindAsync(ticket.FlightId);
                     flight?.DecrementSeatAvailability(ticket.FlightClassName);
+                    flight.Version++;
+       
                 }
 
                 await _context.SaveChangesAsync();
