@@ -68,7 +68,7 @@ namespace backend
 			});
 
 
-			string? mongoDbConnectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING");
+			string? mongoDbConnectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING") ?? "";
 
 			builder.Services.AddDbContext<MongoDBContext>(options =>
 			{

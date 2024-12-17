@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `airline_project`.`tickets` (
 
 -- CheckAndInsertFlight stored procedure
 DELIMITER $$
-CREATE DEFINER=`root`@`%` PROCEDURE `CheckAndInsertFlight`(
+CREATE DEFINER=`app_user`@`%` PROCEDURE `CheckAndInsertFlight`(
     IN airplaneId BIGINT,
     IN departureTime DATETIME,
     IN completionTime DATETIME,
@@ -378,19 +378,37 @@ DELIMITER ;
 
 
 -- -----------------------------------------------------
--- Application User Role Creation
+-- Application User  Creation
 -- -----------------------------------------------------
-CREATE ROLE app_user;
 
-GRANT SELECT, CREATE ON TABLE users TO app_user;
 
-GRANT SELECT ON TABLE airplanes TO app_user;
+-- Slet brugeren hvis den allerede eksisterer
+DROP USER IF EXISTS 'app_user'@'%';
 
-GRANT SELECT ON TABLE airports TO app_user;
+CREATE USER 'app_user'@'%' IDENTIFIED BY '123123';
 
-GRANT SELECT ON TABLE airlines TO app_user;
+GRANT SELECT, CREATE ON airline_project.users TO app_user;
+GRANT SELECT ON airline_project.airplanes TO app_user;
+GRANT SELECT ON airline_project.airports TO app_user;
+GRANT SELECT ON airline_project.airlines TO app_user;
+GRANT SELECT ON airline_project.cities TO app_user;
+GRANT SELECT ON airline_project.states TO app_user;
+GRANT SELECT ON airline_project.flight_classes TO app_user;
+GRANT SELECT, CREATE, DELETE, UPDATE ON airline_project.flights TO app_user;
+GRANT SELECT, CREATE ON airline_project.bookings TO app_user;
+GRANT SELECT, CREATE ON airline_project.tickets TO app_user;
+GRANT SELECT, CREATE ON airline_project.passengers TO app_user;
 
-GRANT SELECT, CREATE ON TABLE flights TO app_user;
+GRANT USAGE ON airline_project.* TO 'app_user'@'%';
+
+
+FLUSH PRIVILEGES;
+
+
+-- -----------------------------------------------------
+-- 
+-- -----------------------------------------------------
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
