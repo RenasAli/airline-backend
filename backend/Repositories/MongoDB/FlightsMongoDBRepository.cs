@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using backend.Database;
 using backend.Models;
+using backend.Models.MongoDB;
+using backend.Utils;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 
@@ -17,8 +19,17 @@ namespace backend.Repositories.MongoDB
             {
                 throw new InvalidOperationException("There are 1 or more overlapping flights.");
             }
+            
+            var newFlightId = UniqueSequenceGenerator.GenerateLongIdUsingTicks();
 
-            return null;
+            flight.Id = newFlightId;
+
+            var flightEntity = _mapper.Map<FlightMongo>(flight);
+
+            await _context.Flights.AddAsync(flightEntity);
+            await _context.SaveChangesAsync();
+        
+            return flight;
         }
 
         public Task<Flight> Delete(long id, string deletedBy)
