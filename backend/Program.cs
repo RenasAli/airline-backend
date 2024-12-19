@@ -11,10 +11,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Sentry.Extensibility;
+//using backend.Database.Data.MongoDB;
+//using backend.Repositories.MongoDB;
+//using MongoDB.Driver;
+using Neo4jClient;
 
 namespace backend
 {
-	public class Program
+    public class Program
 	{
 		public static void Main(string[] args)
 		{
@@ -61,8 +65,19 @@ namespace backend
 			string? connectionString = Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("Default");
 			builder.Services.AddDbContext<DatabaseContext>(options =>
 			{
-				options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+				options.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.AutoDetect(connectionString));
 			});
+
+
+			string? mongoDbConnectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING");
+
+			/*builder.Services.AddDbContext<MongoDBContext>(options =>
+			{
+				options.UseMongoDB(mongoDbConnectionString, "mydatabase");
+			});*/
+
+			builder.Services.AddScoped<Neo4jDbContext>();
+
 			
 			///////
 			builder.Services.AddAuthentication(options =>
@@ -108,14 +123,51 @@ namespace backend
 	  // Add HTTP client for Google Distance API
 	  builder.Services.AddHttpClient<IDistanceApiService, DistanceApiService>();
 
+			
 
-            // Register / add repositories to the container
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IFlightRepository, FlightRepository>();
-            builder.Services.AddScoped<IAirportRepository, AirportRepository>();
-            builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
-            builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
-            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+			// Register repository dependency injection depending on database type
+			string? databaseType = Environment.GetEnvironmentVariable("DB_TYPE");
+
+			switch (databaseType)
+			{
+				case "MySQL":
+					builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();        
+                    builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+                    builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+                    builder.Services.AddScoped<IUserRepository, UserRepository>();
+                    builder.Services.AddScoped<IAirportRepository, AirportRepository>();
+                    builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
+                    break;
+				/*case "MongoDB":
+                    builder.Services.AddScoped<IAirplaneRepository, AirplaneMongoDBRepository>();
+					builder.Services.AddScoped<IFlightRepository, FlightsMongoDBRepository>();
+					builder.Services.AddScoped<IBookingRepository, BookingMongoDBRepository>();
+                    builder.Services.AddScoped<IUserRepository, UserMongoDBRepository>();
+                    builder.Services.AddScoped<IAirportRepository, AirportMongoDBRepository>();
+                    builder.Services.AddScoped<IAirlineRepository, AirlineMongoDBRepository>();
+
+                    // Register MongoDB seeder
+                    builder.Services.AddTransient<MongoDBSeeder>();
+
+                    // Register IMongoclient for the MongoDB seeder
+                    builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
+                    {
+                        return new MongoClient(mongoDbConnectionString);
+                    });
+
+                    break;*/
+                case "Neo4j":
+                    Console.WriteLine("Nothing to register yet");
+					break;
+                default:
+					throw new ArgumentException("Need to specify a database type by prodiving the DB_TYPE environment variable ('MySQL' | 'MongoDB' | 'Neo4j').");
+            }
+
+			// Register repositories for the DI container
+
+            
+            
+            
 
             // Add services to the container.
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -162,7 +214,19 @@ namespace backend
 			app.UseAuthorization();
 			app.MapControllers();
 
-			app.Run();
+			if (databaseType == "MongoDB")
+			{
+				// Seed the MongoDB database
+				using (var scope = app.Services.CreateScope())
+                {
+                    //var mongoSeeder = scope.ServiceProvider.GetRequiredService<MongoDBSeeder>();
+                    //mongoSeeder.Seed();
+                }
+
+            }
+            
+
+            app.Run();
 		}
 	}
 }
