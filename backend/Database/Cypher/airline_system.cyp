@@ -1,67 +1,77 @@
-// Create airlines
-MERGE (delta:Airline {name: "Delta Airlines"});
-MERGE (united:Airline {name: "United Airlines"});
-MERGE (american:Airline {name: "American Airlines"});
+// Create Airline Nodes
+CREATE (a1:Airline {id: 1, name: 'Airline 1'})
+CREATE (a2:Airline {id: 2, name: 'Airline 2'})
 
-// Create airplanes and link to airlines
-MERGE (b737:Airplane {name: "Boeing 737", economy_class_seats: 140, business_class_seats: 40, first_class_seats: 5})-[:OWNED_BY]->(delta);
-MERGE (a320:Airplane {name: "Airbus A320", economy_class_seats: 120, business_class_seats: 22, first_class_seats: 20})-[:OWNED_BY]->(united);
-MERGE (b777:Airplane {name: "Boeing 777", economy_class_seats: 120, business_class_seats: 12, first_class_seats: 20})-[:OWNED_BY]->(american);
+// Create Airplane Nodes
+CREATE (airplane1:Airplane {id: 1, name: 'Airplane 1', economy_class_seats: 100, business_class_seats: 20, first_class_seats: 5})
+CREATE (airplane2:Airplane {id: 2, name: 'Airplane 2', economy_class_seats: 120, business_class_seats: 30, first_class_seats: 10})
 
-// Create states
-MERGE (ca:State {name: "California", code: "CA"});
-MERGE (ny:State {name: "New York", code: "NY"});
-MERGE (tx:State {name: "Texas", code: "TX"});
+// Link Airplanes to Airlines
+CREATE (airplane1)-[:BELONGS_TO]->(a1)
+CREATE (airplane2)-[:BELONGS_TO]->(a2)
 
-// Create cities and link to states
-MERGE (la:City {name: "Los Angeles"})-[:IN_STATE]->(ca);
-MERGE (nyc:City {name: "New York"})-[:IN_STATE]->(ny);
-MERGE (hou:City {name: "Houston"})-[:IN_STATE]->(tx);
+// Create State Nodes
+CREATE (state1:State {id: 1, code: 'NY'})
+CREATE (state2:State {id: 2, code: 'CA'})
 
-// Create airports and link to cities
-MERGE (lax:Airport {name: "Los Angeles International Airport", code: "LAX"})-[:LOCATED_IN]->(la);
-MERGE (jfk:Airport {name: "John F. Kennedy International Airport", code: "JFK"})-[:LOCATED_IN]->(nyc);
-MERGE (iah:Airport {name: "George Bush Intercontinental Airport", code: "IAH"})-[:LOCATED_IN]->(hou);
+// Create City Nodes and link to States
+CREATE (city1:City {id: 1, name: 'New York'})-[:LOCATED_IN]->(state1)
+CREATE (city2:City {id: 2, name: 'Los Angeles'})-[:LOCATED_IN]->(state2)
 
-// Create users
-MERGE (admin:User {name: "Admin1", email: "admin@example.com", password: "hashed_admin_password", role: "Admin"});
-MERGE (customer1:User {name: "Customer1", email: "customer@example.com", password: "hashed_customer_password", role: "Customer"});
-MERGE (customer2:User {name: "Customer2", email: "customer2@example.com", password: "hashed_customer_password", role: "Customer"});
+// Create Airport Nodes and link to Cities
+CREATE (airport1:Airport {id: 1, name: 'JFK', code: 'JFK'})-[:LOCATED_IN]->(city1)
+CREATE (airport2:Airport {id: 2, name: 'LAX', code: 'LAX'})-[:LOCATED_IN]->(city2)
 
-// Create bookings and link to users
-MERGE (booking1:Booking {confirmation_number: "ABC123"})-[:BELONGS_TO]->(customer1);
-MERGE (booking2:Booking {confirmation_number: "DEF456"})-[:BELONGS_TO]->(customer1);
-MERGE (booking3:Booking {confirmation_number: "GHI789"})-[:BELONGS_TO]->(customer2);
+// Create User Nodes
+CREATE (user1:User {id: 1, email: 'user1@example.com', password: 'password1', role: 'customer'})
+CREATE (user2:User {id: 2, email: 'user2@example.com', password: 'password2', role: 'admin'})
 
-// Create flight classes
-MERGE (economy:FlightClass {name: "EconomyClass", price_multiplier: 1.00});
-MERGE (business:FlightClass {name: "BusinessClass", price_multiplier: 1.50});
-MERGE (first:FlightClass {name: "FirstClass", price_multiplier: 3.00});
+// Create Booking Nodes
+CREATE (booking1:Booking {id: 1, confirmation_number: 'ABC123'})
+CREATE (booking2:Booking {id: 2, confirmation_number: 'DEF456'})
 
-// Create flights and link to airports, airlines, and airplanes
-MERGE (flight1:Flight {flight_code: "DL100", departure_time: "2024-12-24T08:00:00", travel_time: 360, price: 199.99, kilometers: 450, economy_class_seats_available: 150, business_class_seats_available: 20, first_class_seats_available: 5})
--[:DEPARTS_FROM]->(lax)
--[:ARRIVES_AT]->(jfk)
--[:OPERATED_BY]->(delta)
--[:USES_AIRPLANE]->(b737);
+// Link Bookings to Users
+CREATE (booking1)-[:MADE_BY]->(user1)
+CREATE (booking2)-[:MADE_BY]->(user2)
 
-MERGE (flight2:Flight {flight_code: "DL101", departure_time: "2024-12-24T09:30:00", travel_time: 360, price: 199.99, kilometers: 450, economy_class_seats_available: 150, business_class_seats_available: 20, first_class_seats_available: 5})
--[:DEPARTS_FROM]->(jfk)
--[:ARRIVES_AT]->(iah)
--[:OPERATED_BY]->(delta)
--[:USES_AIRPLANE]->(b777);
+// Create Flight Class Nodes
+CREATE (economyClass:FlightClass {id: 1, name: 'Economy', price_multiplier: 1.0})
+CREATE (businessClass:FlightClass {id: 2, name: 'Business', price_multiplier: 1.5})
+CREATE (firstClass:FlightClass {id: 3, name: 'First Class', price_multiplier: 2.0})
 
-// Link flights to bookings
-MERGE (booking1)-[:CONTAINS_FLIGHT]->(flight1);
-MERGE (booking2)-[:CONTAINS_FLIGHT]->(flight2);
+// Create Flight Nodes
+CREATE (flight1:Flight {id: 1, flight_code: 'FL123', departure_time: '2024-12-15T10:00:00', completion_time: '2024-12-15T12:00:00', travel_time: 120, price: 200.00, kilometers: 500, economy_class_seats_available: 80, business_class_seats_available: 15, first_class_seats_available: 5})
+CREATE (flight2:Flight {id: 2, flight_code: 'FL456', departure_time: '2024-12-15T14:00:00', completion_time: '2024-12-15T16:00:00', travel_time: 120, price: 250.00, kilometers: 600, economy_class_seats_available: 100, business_class_seats_available: 20, first_class_seats_available: 10})
 
-// Create passengers and link to tickets
-MERGE (jane:Passenger {first_name: "Jane", last_name: "Smith", email: "jane.smith@example.com"});
-MERGE (michael:Passenger {first_name: "Michael", last_name: "Jones", email: "michael.jones@example.com"});
+// Link Flights to Airports (Departure and Arrival)
+CREATE (flight1)-[:DEPARTS_FROM]->(airport1)
+CREATE (flight1)-[:ARRIVES_AT]->(airport2)
+CREATE (flight2)-[:DEPARTS_FROM]->(airport2)
+CREATE (flight2)-[:ARRIVES_AT]->(airport1)
 
-// Create tickets and link to passengers, flights, and flight classes
-MERGE (ticket1:Ticket {price: 300.00, ticket_number: "TCK1001"})-[:FOR_FLIGHT]->(flight1)-[:CLASS_TYPE]->(economy);
-MERGE (ticket2:Ticket {price: 500.00, ticket_number: "TCK1002"})-[:FOR_FLIGHT]->(flight2)-[:CLASS_TYPE]->(business);
+// Link Flights to Airlines and Airplanes
+CREATE (flight1)-[:OPERATED_BY]->(a1)
+CREATE (flight1)-[:FLIES_ON]->(airplane1)
+CREATE (flight2)-[:OPERATED_BY]->(a2)
+CREATE (flight2)-[:FLIES_ON]->(airplane2)
 
-MERGE (jane)-[:HAS_TICKET]->(ticket1);
-MERGE (michael)-[:HAS_TICKET]->(ticket2);
+// Create Passenger Nodes
+CREATE (passenger1:Passenger {id: 1, first_name: 'John', last_name: 'Doe', email: 'john.doe@example.com'})
+CREATE (passenger2:Passenger {id: 2, first_name: 'Jane', last_name: 'Smith', email: 'jane.smith@example.com'})
+
+// Link Passengers to Bookings
+CREATE (ticket1:Ticket {id: 1, price: 200.00, ticket_number: 'TICK123'})
+CREATE (ticket2:Ticket {id: 2, price: 250.00, ticket_number: 'TICK456'})
+
+// Link Tickets to Flights, Passengers, and Bookings
+CREATE (ticket1)-[:BOOKED_FOR]->(flight1)
+CREATE (ticket1)-[:ISSUED_TO]->(passenger1)
+CREATE (ticket1)-[:ASSOCIATED_WITH]->(booking1)
+CREATE (ticket1)-[:IN_CLASS]->(economyClass)
+
+CREATE (ticket2)-[:BOOKED_FOR]->(flight2)
+CREATE (ticket2)-[:ISSUED_TO]->(passenger2)
+CREATE (ticket2)-[:ASSOCIATED_WITH]->(booking2)
+CREATE (ticket2)-[:IN_CLASS]->(businessClass)
+
+// OPTIONAL: For procedures like 'CheckAndInsertFlight', Neo4j doesn't support procedural SQL, but you can model the logic using constraints or Cypher queries. You could, for example, check if a flight already exists before adding a new one with a unique code or departure/arrival time overlap.

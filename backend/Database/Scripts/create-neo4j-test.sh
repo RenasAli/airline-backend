@@ -41,12 +41,13 @@ if [ $? -eq 0 ]; then
 
     # Wait for Neo4j to be fully started
     echo "Waiting for Neo4j to be ready..."
-    sleep 10
+    sleep 20
 
     # Execute Cypher script if it exists
     if [ -f "$CYPHER_SCRIPT" ]; then
         echo "Executing Cypher script: $CYPHER_SCRIPT"
         docker exec -i $CONTAINER_NAME cypher-shell -u $NEO4J_USER -p $NEO4J_PASSWORD < "$CYPHER_SCRIPT"
+        sleep 30
         if [ $? -eq 0 ]; then
             echo "Cypher script executed successfully!"
         else
