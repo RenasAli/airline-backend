@@ -36,7 +36,7 @@ namespace backend.Repositories
 
         public async Task<Booking> CreateBooking(BookingProcessedRequest request)
         {
-            var transaction = _context.Database.BeginTransaction();
+            var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
@@ -70,6 +70,8 @@ namespace backend.Repositories
 
                     var flight = await _context.Flights.FindAsync(ticket.FlightId);
                     flight?.DecrementSeatAvailability(ticket.FlightClassName);
+                    flight.Version++;
+       
                 }
 
                 await _context.SaveChangesAsync();

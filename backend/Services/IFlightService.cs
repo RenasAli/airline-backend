@@ -14,7 +14,7 @@ namespace backend.Services
         Task<List<FlightResponse>> GetFlightsByDepartureDestinationAndDepartureDate(long departureAirportId, long destinationAirportId, DateOnly departureDate);
         Task<FlightClass?> GetFlightClassById(long id);
         Task<bool> UpdateFlight(UpdateFlightRequest updateFlightRequest, Flight flight);
-        Task CancelFlight(long id);
+        Task CancelFlight(long id, string canceledBy);
         Task ChangeFlight();
     }
 }
