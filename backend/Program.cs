@@ -11,10 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Sentry.Extensibility;
-//using backend.Database.Data.MongoDB;
-//using backend.Repositories.MongoDB;
-//using MongoDB.Driver;
-using Neo4jClient;
+using backend.Database.Data.MongoDB;
+using backend.Repositories.MongoDB;
+using MongoDB.Driver;
 
 namespace backend
 {
