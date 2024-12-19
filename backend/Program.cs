@@ -11,9 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Sentry.Extensibility;
-using backend.Database.Data.MongoDB;
-using backend.Repositories.MongoDB;
-using MongoDB.Driver;
+//using backend.Database.Data.MongoDB;
+//using backend.Repositories.MongoDB;
+//using MongoDB.Driver;
+using Neo4jClient;
 
 namespace backend
 {
@@ -65,6 +66,7 @@ namespace backend
 			builder.Services.AddDbContext<DatabaseContext>(options =>
 			{
 				options.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.AutoDetect(connectionString));
+				options.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.AutoDetect(connectionString));
 			});
 
 
@@ -74,6 +76,12 @@ namespace backend
 			{
 				options.UseMongoDB(mongoDbConnectionString, "mydatabase");
 			});
+
+
+
+
+			builder.Services.AddScoped<Neo4jDbContext>();
+
 			
 			///////
 			builder.Services.AddAuthentication(options =>
