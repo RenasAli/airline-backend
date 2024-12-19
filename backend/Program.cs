@@ -65,6 +65,7 @@ namespace backend
 			builder.Services.AddDbContext<DatabaseContext>(options =>
 			{
 				options.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.AutoDetect(connectionString));
+				options.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.AutoDetect(connectionString));
 			});
 
 
@@ -74,6 +75,12 @@ namespace backend
 			{
 				options.UseMongoDB(mongoDbConnectionString, "mydatabase");
 			});
+
+
+
+
+			builder.Services.AddScoped<Neo4jDbContext>();
+
 			
 			///////
 			builder.Services.AddAuthentication(options =>
