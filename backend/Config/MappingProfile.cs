@@ -2,6 +2,7 @@
 using backend.Dtos;
 using backend.Models;
 using backend.Models.MongoDB;
+using backend.Models.Neo4jModels;
 
 namespace backend.Config
 {
@@ -33,6 +34,11 @@ namespace backend.Config
             CreateMap<TicketCreationRequest, TicketProcessedRequest>();
 
             CreateMap<Booking, BookingResponse>();
+
+            // Mappings from Neo4j entities to the "shared" models
+            CreateMap<Neo4jAirline, Airline>();
+            CreateMap<Neo4jAirplane, Airplane>();
+            CreateMap<Neo4jAirport, Airport>();
 
             // Mappings from MongoDB entities to the "shared" models
             CreateMap<AirlineMongo, Airline>();

@@ -14,6 +14,8 @@ using Sentry.Extensibility;
 using backend.Database.Data.MongoDB;
 using backend.Repositories.MongoDB;
 using MongoDB.Driver;
+using backend.Repositories.Neo4j;
+using Neo4jClient;
 
 namespace backend
 {
@@ -69,7 +71,7 @@ namespace backend
 			});
 
 
-			string? mongoDbConnectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING");
+			string? mongoDbConnectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING")?? "";
 
 			builder.Services.AddDbContext<MongoDBContext>(options =>
 			{
@@ -79,8 +81,15 @@ namespace backend
 
 
 
-			builder.Services.AddScoped<Neo4jDbContext>();
-
+			builder.Services.AddSingleton<IGraphClient>(provider =>
+			{
+				var neo4jUrl = Environment.GetEnvironmentVariable("NEO4J_URL")?? "";
+				var neo4jUsername = Environment.GetEnvironmentVariable("NEO4J_USERNAME");
+				var neo4jPassword = Environment.GetEnvironmentVariable("NEO4J_PASSWORD");
+				var client = new BoltGraphClient(new Uri(neo4jUrl), neo4jUsername, neo4jPassword);
+				client.ConnectAsync().Wait(); // Ensure the client connects to the database
+				return client;
+			});
 			
 			///////
 			builder.Services.AddAuthentication(options =>
@@ -160,7 +169,14 @@ namespace backend
 
                     break;
                 case "Neo4j":
-                    Console.WriteLine("Nothing to register yet");
+				
+					builder.Services.AddScoped<IAirlineRepository, AirlineNeo4jRepository>();
+					builder.Services.AddScoped<IAirplaneRepository, AirplaneNeo4jRepository>();
+					builder.Services.AddScoped<IAirportRepository, AirportNeo4jRepository>();
+					builder.Services.AddScoped<IFlightRepository, FlightsMongoDBRepository>();
+					builder.Services.AddScoped<IBookingRepository, BookingMongoDBRepository>();
+                    builder.Services.AddScoped<IUserRepository, UserMongoDBRepository>();
+               
 					break;
                 default:
 					throw new ArgumentException("Need to specify a database type by prodiving the DB_TYPE environment variable ('MySQL' | 'MongoDB' | 'Neo4j').");

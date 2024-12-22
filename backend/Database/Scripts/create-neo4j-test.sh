@@ -8,7 +8,7 @@ NEO4J_VERSION="5.14.0"   # Specify Neo4j version (adjust as needed)
 NEO4J_PORT="7474"        # HTTP port for Neo4j
 NEO4J_BOLT_PORT="7687"   # Bolt protocol port
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"  # Directory of this script
-CYPHER_SCRIPT="${script_dir}/../Cypher/airline_system.cyp"  # Cypher script to execute
+CYPHER_SCRIPT="${script_dir}/../Cypher/airline_system_2.cyp"  # Cypher script to execute
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null; then
