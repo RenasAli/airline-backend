@@ -22,10 +22,8 @@ namespace backend.Models.Neo4jModels
         [JsonProperty("first_class_seats")]
         public long FirstClassSeats { get; set; }
 
-        [JsonProperty("airplanes_airline")]
         public virtual Neo4jAirline AirplanesAirline { get; set; } = null!;
 
-        [JsonProperty("flights")]
         public virtual ICollection<Neo4jFlight> Flights { get; set; } = new List<Neo4jFlight>();
     }
 }

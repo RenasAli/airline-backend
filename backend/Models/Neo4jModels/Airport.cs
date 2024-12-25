@@ -16,13 +16,10 @@ namespace backend.Models.Neo4jModels
         [JsonProperty("city_id")]
         public int? CityId { get; set; }
 
-        [JsonProperty("city")]
         public virtual Neo4jCity? City { get; set; }
 
-        [JsonProperty("flight_arrival_port_navigations")]
         public virtual ICollection<Neo4jFlight> FlightArrivalPortNavigations { get; set; } = new List<Neo4jFlight>();
         
-        [JsonProperty("flight_departur_port_navigations")]
         public virtual ICollection<Neo4jFlight> FlightDeparturePortNavigations { get; set; } = new List<Neo4jFlight>();
 
     }

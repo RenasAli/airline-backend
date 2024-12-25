@@ -10,10 +10,8 @@ namespace backend.Models.Neo4jModels
         [JsonProperty("name")]
         public string Name { get; set; } = null!;
 
-        [JsonProperty("airplanes")]
         public virtual ICollection<Neo4jAirplane> Airplanes { get; set; } = new List<Neo4jAirplane>();
 
-        [JsonProperty("flights")]
         public virtual ICollection<Neo4jFlight> Flights { get; set; } = new List<Neo4jFlight>();
     }
 }

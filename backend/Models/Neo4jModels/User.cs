@@ -16,7 +16,6 @@ namespace backend.Models.Neo4jModels
         [JsonProperty("role")]
         public string Role { get; set; } = null!;
 
-        [JsonProperty("bookings")]
         public virtual ICollection<Neo4jBooking> Bookings { get; set; } = new List<Neo4jBooking>();
     }
 
