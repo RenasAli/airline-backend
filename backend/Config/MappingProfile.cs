@@ -81,6 +81,12 @@ namespace backend.Config
 
             CreateMap<FlightClassMongo, FlightClass>();
 
+            CreateMap<Flight, FlightMongo>()
+                .ForMember(dest => dest.FlightsAirline, opt => opt.MapFrom(src => src.FlightsAirline))
+                .ForMember(dest => dest.FlightsAirplane, opt => opt.MapFrom(src => src.FlightsAirplane))
+                .ForMember(dest => dest.ArrivalPort, opt => opt.MapFrom(src => new AirportSnapshot { Id = src.ArrivalPort }))
+                .ForMember(dest => dest.DeparturePort, opt => opt.MapFrom(src => new AirportSnapshot { Id = src.DeparturePort }));
+
             // Mapping for BookingMongo and embedded documents and snapshots
             CreateMap<FlightSnapShot, Flight>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
