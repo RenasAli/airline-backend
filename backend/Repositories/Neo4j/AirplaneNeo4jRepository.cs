@@ -29,7 +29,10 @@ public class AirplaneNeo4jRepository(IGraphClient graphClient, IMapper mapper): 
             .Where((Neo4jAirplane a) => a.Id == id)
             .Return(a => a.As<Neo4jAirplane>())  
             .ResultsAsync;
+
+            var singleNeo4jairplane = airplane.SingleOrDefault();
+
+            return singleNeo4jairplane == null ? null : _mapper.Map<Airplane>(singleNeo4jairplane);
             
-            return _mapper.Map<Airplane>(airplane);;
     }
 }

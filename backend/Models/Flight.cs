@@ -34,7 +34,7 @@ public partial class Flight
 
     public long FlightsAirplaneId { get; set; }
 
-    public string IdempotencyKey { get; set; }
+    public string IdempotencyKey { get; set; } = null!;
     public string? CreatedBy { get; set; }
 
     public string? UpdatedBy { get; set; }

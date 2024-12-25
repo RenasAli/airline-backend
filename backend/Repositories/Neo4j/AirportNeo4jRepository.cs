@@ -2,6 +2,7 @@ using Neo4jClient;
 using backend.Models.Neo4jModels;
 using AutoMapper;
 using backend.Models;
+using MongoDB.Bson;
 
 namespace backend.Repositories.Neo4j;
 public class AirportNeo4jRepository(IGraphClient graphClient, IMapper mapper): IAirportRepository
@@ -25,9 +26,10 @@ public class AirportNeo4jRepository(IGraphClient graphClient, IMapper mapper): I
     public async Task<List<Airport>> FindByIds(params long[] ids)
         {
             var query = await _graphClient.Cypher
-            .Match("(a:Airport)")
-            .Where((Neo4jAirplane a) => ids.Contains(a.Id))
-            .Return(a => a.As<Neo4jAirport>())  
+            .Match("(a:Airport)")  // Match Airport nodes
+            .Where("a.id IN $ids") // Use the IN operator to check if 'a.Id' is in the provided
+            .WithParam("ids", ids)  // Pass the array of ids as a parameter
+            .Return(a => a.As<Neo4jAirport>())  // Return matched Airports
             .ResultsAsync;
 
             var airports = query.ToList();

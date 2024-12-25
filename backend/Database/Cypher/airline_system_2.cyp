@@ -40,8 +40,11 @@ CREATE (businessClass:FlightClass {id: 2, name: 'Business', price_multiplier: 1.
 CREATE (firstClass:FlightClass {id: 3, name: 'First Class', price_multiplier: 2.0})
 
 // Create Flight Nodes
-CREATE (flight1:Flight {id: 1, flight_code: 'FL123', departure_time: '2024-12-15T10:00:00', completion_time: '2024-12-15T12:00:00', travel_time: 120, price: 200.00, kilometers: 500, economy_class_seats_available: 80, business_class_seats_available: 15, first_class_seats_available: 5})
-CREATE (flight2:Flight {id: 2, flight_code: 'FL456', departure_time: '2024-12-15T14:00:00', completion_time: '2024-12-15T16:00:00', travel_time: 120, price: 250.00, kilometers: 600, economy_class_seats_available: 100, business_class_seats_available: 20, first_class_seats_available: 10})
+CREATE (flight1:Flight {id: 1, flight_code: 'FL123', departure_port: 1, arrival_port: 2, departure_time: '2024-12-15T10:00:00', completion_time: '2024-12-15T12:00:00', travel_time: 120, price: 200.00, kilometers: 500, economy_class_seats_available: 80, business_class_seats_available: 15, first_class_seats_available: 5, flights_airline_id: 1, flights_airplane_id: 1, idempotency_key: 'key123', created_by: 'admin'})
+
+CREATE (flight2:Flight {id: 2, flight_code: 'FL456', departure_port: 2, arrival_port: 1, departure_time: '2024-12-15T14:00:00', completion_time: '2024-12-15T16:00:00', travel_time: 120, price: 250.00, kilometers: 600, economy_class_seats_available: 100, business_class_seats_available: 20, first_class_seats_available: 10, flights_airline_id: 2, flights_airplane_id: 2, idempotency_key: 'key123', created_by: 'admin'})
+
+
 
 // Link Flights to Airports (Departure and Arrival)
 CREATE (flight1)-[:DEPARTS_FROM]->(airport1)

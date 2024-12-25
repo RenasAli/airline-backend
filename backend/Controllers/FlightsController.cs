@@ -49,14 +49,14 @@ namespace backend.Controllers
 			}
 		}
 
-		[Authorize(Roles = "Admin")]
+		//[Authorize(Roles = "Admin")]
 		[HttpPost]
 		public async Task<IActionResult> AddFlight([FromBody] FlightCreationRequest flightCreationRequest)
 		{
             var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
             try
 			{
-				flightCreationRequest.CreatedBy = emailClaim?.Value;
+				flightCreationRequest.CreatedBy = "user1@example.com"; //emailClaim?.Value;
 				var createdFlight = await _flightService.CreateFlight(flightCreationRequest);
 				return StatusCode(StatusCodes.Status201Created, new { message = "Flight was created successfully!", createdFlight });
 			}

@@ -169,13 +169,14 @@ namespace backend
 
                     break;
                 case "Neo4j":
-				
+
 					builder.Services.AddScoped<IAirlineRepository, AirlineNeo4jRepository>();
 					builder.Services.AddScoped<IAirplaneRepository, AirplaneNeo4jRepository>();
 					builder.Services.AddScoped<IAirportRepository, AirportNeo4jRepository>();
-					builder.Services.AddScoped<IFlightRepository, FlightsMongoDBRepository>();
+					builder.Services.AddScoped<IUserRepository, UserNeo4jRepository>();
+					builder.Services.AddScoped<IFlightRepository, FlightNeo4jRepository>();
 					builder.Services.AddScoped<IBookingRepository, BookingMongoDBRepository>();
-                    builder.Services.AddScoped<IUserRepository, UserMongoDBRepository>();
+                    
                
 					break;
                 default:

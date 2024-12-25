@@ -39,6 +39,8 @@ namespace backend.Config
             CreateMap<Neo4jAirline, Airline>();
             CreateMap<Neo4jAirplane, Airplane>();
             CreateMap<Neo4jAirport, Airport>();
+            CreateMap<Neo4jFlight, Flight>();
+            CreateMap<User, Neo4jUser>().ReverseMap();
 
             // Mappings from MongoDB entities to the "shared" models
             CreateMap<AirlineMongo, Airline>();
