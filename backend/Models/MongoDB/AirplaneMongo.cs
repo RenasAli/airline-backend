@@ -10,7 +10,6 @@ namespace backend.Models.MongoDB
         [BsonId]
         public long Id { get; set; }
 
-
         [BsonElement("name")]
         public string Name { get; set; }
 

@@ -18,7 +18,7 @@ public partial class Airplane
 
     public int FirstClassSeats { get; set; }
 
-    public virtual Airline AirplanesAirline { get; set; } = null!;
+    public virtual Airline AirplanesAirline { get; set; } // = null!;
 
     [JsonIgnore]
     public virtual ICollection<Flight> Flights { get; set; } = new List<Flight>();

@@ -35,20 +35,27 @@ namespace backend.Config
             CreateMap<Booking, BookingResponse>();
 
             // Mappings from MongoDB entities to the "shared" models
-            CreateMap<AirlineMongo, Airline>();
-            CreateMap<AirportMongo, Airport>();
-            CreateMap<AirplaneMongo, Airplane>();
+            CreateMap<AirlineMongo, Airline>()
+            .ReverseMap();
+
+            CreateMap<AirportMongo, Airport>()
+            .ReverseMap();
+
+            CreateMap<AirplaneMongo, Airplane>()
+            .ReverseMap();
 
             CreateMap<AirlineSnapshot, Airline>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ReverseMap();
 
             CreateMap<AirplaneSnapshot, Airplane>()
                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                .ForMember(dest => dest.EconomyClassSeats, opt => opt.MapFrom(src => src.EconomyClassSeats))
                .ForMember(dest => dest.BusinessClassSeats, opt => opt.MapFrom(src => src.BusinessClassSeats))
-               .ForMember(dest => dest.FirstClassSeats, opt => opt.MapFrom(src => src.FirstClassSeats));
+               .ForMember(dest => dest.FirstClassSeats, opt => opt.MapFrom(src => src.FirstClassSeats))
+               .ReverseMap();
 
             // Additional mapping for AirportSnapshot -> Airport
             CreateMap<AirportSnapshot, Airport>()
@@ -56,17 +63,20 @@ namespace backend.Config
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
                 .ForMember(dest => dest.CityId, opt => opt.MapFrom(src => src.City.Id))
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City));
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City))
+                .ReverseMap();
 
             CreateMap<CitySnapshot, City>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.StateId, opt => opt.MapFrom(src => src.State.Id))
-                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State));
+                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State))
+                .ReverseMap();
 
             CreateMap<StateSnapshot, State>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code));
+                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
+                .ReverseMap();
 
             CreateMap<FlightMongo, Flight>()
                 .ForMember(dest => dest.FlightsAirlineId, opt => opt.MapFrom(src => src.FlightsAirline.Id))
@@ -82,10 +92,49 @@ namespace backend.Config
             CreateMap<FlightClassMongo, FlightClass>();
 
             CreateMap<Flight, FlightMongo>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.FlightsAirline, opt => opt.MapFrom(src => src.FlightsAirline))
                 .ForMember(dest => dest.FlightsAirplane, opt => opt.MapFrom(src => src.FlightsAirplane))
-                .ForMember(dest => dest.ArrivalPort, opt => opt.MapFrom(src => new AirportSnapshot { Id = src.ArrivalPort }))
-                .ForMember(dest => dest.DeparturePort, opt => opt.MapFrom(src => new AirportSnapshot { Id = src.DeparturePort }));
+                .ForMember(dest => dest.ArrivalPort, opt => opt.MapFrom(src => new AirportSnapshot 
+                { 
+                    Id = src.ArrivalPort, 
+                    Name = src.ArrivalPortNavigation.Name, 
+                    Code = src.ArrivalPortNavigation.Code, 
+                    City = new CitySnapshot 
+                    { 
+                        Id = src.ArrivalPortNavigation.City.Id, 
+                        Name = src.ArrivalPortNavigation.City.Name, 
+                        State = new StateSnapshot 
+                        { 
+                            Id = src.ArrivalPortNavigation.City.State.Id, 
+                            Code = src.ArrivalPortNavigation.City.State.Code 
+                        } 
+                    } 
+                }))
+                .ForMember(dest => dest.DeparturePort, opt => opt.MapFrom(src => new AirportSnapshot 
+                { 
+                    Id = src.DeparturePort, 
+                    Name = src.DeparturePortNavigation.Name, 
+                    Code = src.DeparturePortNavigation.Code, 
+                    City = new CitySnapshot 
+                    { 
+                        Id = src.DeparturePortNavigation.City.Id, 
+                        Name = src.DeparturePortNavigation.City.Name, 
+                        State = new StateSnapshot 
+                        { 
+                            Id = src.DeparturePortNavigation.City.State.Id, 
+                            Code = src.DeparturePortNavigation.City.State.Code 
+                        } 
+                    } 
+                }))
+                .ForMember(dest => dest.DepartureTime, opt => opt.MapFrom(src => src.DepartureTime))
+                .ForMember(dest => dest.CompletionTime, opt => opt.MapFrom(src => src.CompletionTime))
+                .ForMember(dest => dest.TravelTime, opt => opt.MapFrom(src => src.TravelTime))
+                .ForMember(dest => dest.Kilometers, opt => opt.MapFrom(src => src.Kilometers))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
+                .ForMember(dest => dest.EconomyClassSeatsAvailable, opt => opt.MapFrom(src => src.EconomyClassSeatsAvailable))
+                .ForMember(dest => dest.BusinessClassSeatsAvailable, opt => opt.MapFrom(src => src.BusinessClassSeatsAvailable))
+                .ForMember(dest => dest.FirstClassSeatsAvailable, opt => opt.MapFrom(src => src.FirstClassSeatsAvailable));
 
             // Mapping for BookingMongo and embedded documents and snapshots
             CreateMap<FlightSnapShot, Flight>()
