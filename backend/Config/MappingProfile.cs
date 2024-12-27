@@ -39,8 +39,34 @@ namespace backend.Config
             CreateMap<Neo4jAirline, Airline>();
             CreateMap<Neo4jAirplane, Airplane>();
             CreateMap<Neo4jAirport, Airport>();
-            CreateMap<Neo4jFlight, Flight>();
             CreateMap<User, Neo4jUser>().ReverseMap();
+            CreateMap<Neo4jBooking, Booking>().ReverseMap();
+            CreateMap<Neo4jTicket, Ticket>();
+            CreateMap<Neo4jCity, City>();
+            CreateMap<Neo4jState, State>();
+            CreateMap<Neo4jPassenger, Passenger>();
+            CreateMap<Neo4jFlightClass, FlightClass>();
+
+            // Define custom mapping for Flight that includes related objects
+            CreateMap<Neo4jFlight, Flight>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.DeparturePortNavigation, 
+                    opt => opt.MapFrom((src, dest, destMember, context) => 
+                        context.Items.ContainsKey("DepartureAirport") 
+                        ? context.Mapper.Map<Airport>(context.Items["DepartureAirport"]) 
+                        : null))
+                .ForMember(dest => dest.ArrivalPortNavigation, 
+                    opt => opt.MapFrom((src, dest, destMember, context) =>
+                        context.Items.ContainsKey("ArrivalAirport") 
+                        ? context.Mapper.Map<Airport>(context.Items["ArrivalAirport"]): null))
+                .ForMember(dest => dest.FlightsAirline, 
+                    opt => opt.MapFrom((src, dest, destMember, context) => 
+                        context.Items.ContainsKey("Airline") 
+                        ? context.Mapper.Map<Airline>(context.Items["Airline"]): null))
+                .ForMember(dest => dest.FlightsAirplane, 
+                    opt => opt.MapFrom((src, dest, destMember, context) => 
+                        context.Items.ContainsKey("Airplane") 
+                        ? context.Mapper.Map<Airplane>(context.Items["Airplane"]): null));
 
             // Mappings from MongoDB entities to the "shared" models
             CreateMap<AirlineMongo, Airline>();

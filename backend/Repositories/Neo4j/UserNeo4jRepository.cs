@@ -20,7 +20,7 @@ public class UserNeo4jRepository(IGraphClient graphClient, IMapper mapper): IUse
         var userNeo4j = _mapper.Map<Neo4jUser>(user);
 
         //the id generator has to be fixed
-        userNeo4j.Id = UniqueSequenceGenerator.GenerateLongIdUsingTicks();
+        userNeo4j.Id = UniqueSequenceGenerator.GenerateUniqueLongIdToNeo4j();
 
         await _graphClient.Cypher
             .Create("(u:User {id: $id, email: $email, password: $password, role: $role})")

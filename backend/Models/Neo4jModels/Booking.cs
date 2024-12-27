@@ -13,6 +13,7 @@ namespace backend.Models.Neo4jModels
         [JsonProperty("code")]
         public string Code { get; set; } = null!;
 
+        [JsonProperty("user_id")]
         public long UserId { get; set; }
         public virtual ICollection<Neo4jTicket> Tickets { get; set; } = new List<Neo4jTicket>();
 

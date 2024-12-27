@@ -23,21 +23,21 @@ CREATE (airport1:Airport {id: 1, name: 'JFK', code: 'JFK'})-[:LOCATED_IN]->(city
 CREATE (airport2:Airport {id: 2, name: 'LAX', code: 'LAX'})-[:LOCATED_IN]->(city2)
 
 // Create User Nodes
-CREATE (user1:User {id: 1, email: 'user1@example.com', password: 'password1', role: 'customer'})
-CREATE (user2:User {id: 2, email: 'user2@example.com', password: 'password2', role: 'admin'})
+CREATE (user1:User {id: 1, email: 'user1@example.com', password: 'AQAAAAIAAYagAAAAECrPK/OaPJ1TtlTl0to+E6f86of8ocaDjTNDunN9fPPlIpFUd787gRpL2lusp8srkg==', role: 'customer'})
+CREATE (user2:User {id: 2, email: 'user2@example.com', password: 'AQAAAAIAAYagAAAAECrPK/OaPJ1TtlTl0to+E6f86of8ocaDjTNDunN9fPPlIpFUd787gRpL2lusp8srkg==', role: 'admin'})
 
 // Create Booking Nodes
-CREATE (booking1:Booking {id: 1, confirmation_number: 'ABC123'})
-CREATE (booking2:Booking {id: 2, confirmation_number: 'DEF456'})
+CREATE (booking1:Booking {id: 1, confirmation_number: 'ABC123', user_id: 1})
+CREATE (booking2:Booking {id: 2, confirmation_number: 'DEF456', user_id: 2})
 
 // Link Bookings to Users
 CREATE (booking1)-[:MADE_BY]->(user1)
 CREATE (booking2)-[:MADE_BY]->(user2)
 
 // Create Flight Class Nodes
-CREATE (economyClass:FlightClass {id: 1, name: 'Economy', price_multiplier: 1.0})
-CREATE (businessClass:FlightClass {id: 2, name: 'Business', price_multiplier: 1.5})
-CREATE (firstClass:FlightClass {id: 3, name: 'First Class', price_multiplier: 2.0})
+CREATE (economyClass:FlightClass {id: 1, name: 'EconomyClass', price_multiplier: 1.0})
+CREATE (businessClass:FlightClass {id: 2, name: 'BusinessClass', price_multiplier: 1.5})
+CREATE (firstClass:FlightClass {id: 3, name: 'FirstClass', price_multiplier: 2.0})
 
 // Create Flight Nodes
 CREATE (flight1:Flight {id: 1, flight_code: 'FL123', departure_port: 1, arrival_port: 2, departure_time: '2024-12-15T10:00:00', completion_time: '2024-12-15T12:00:00', travel_time: 120, price: 200.00, kilometers: 500, economy_class_seats_available: 80, business_class_seats_available: 15, first_class_seats_available: 5, flights_airline_id: 1, flights_airplane_id: 1, idempotency_key: 'key123', created_by: 'admin'})
@@ -62,7 +62,7 @@ CREATE (flight2)-[:FLIES_ON]->(airplane2)
 CREATE (passenger1:Passenger {id: 1, first_name: 'John', last_name: 'Doe', email: 'john.doe@example.com'})
 CREATE (passenger2:Passenger {id: 2, first_name: 'Jane', last_name: 'Smith', email: 'jane.smith@example.com'})
 
-// Link Passengers to Bookings
+// Create Ticket Nodes
 CREATE (ticket1:Ticket {id: 1, price: 200.00, ticket_number: 'TICK123'})
 CREATE (ticket2:Ticket {id: 2, price: 250.00, ticket_number: 'TICK456'})
 

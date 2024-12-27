@@ -175,7 +175,7 @@ namespace backend
 					builder.Services.AddScoped<IAirportRepository, AirportNeo4jRepository>();
 					builder.Services.AddScoped<IUserRepository, UserNeo4jRepository>();
 					builder.Services.AddScoped<IFlightRepository, FlightNeo4jRepository>();
-					builder.Services.AddScoped<IBookingRepository, BookingMongoDBRepository>();
+					builder.Services.AddScoped<IBookingRepository, BookingNeo4jRepository>();
                     
                
 					break;

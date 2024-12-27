@@ -64,34 +64,34 @@ namespace backend.Models.Neo4jModels
         public virtual ICollection<Neo4jTicket> Tickets { get; set; } = new List<Neo4jTicket>();
 
         public void DecrementSeatAvailability(FlightClassName flightClassName)
-    {
-        switch (flightClassName)
         {
-            case FlightClassName.EconomyClass:
-                if (EconomyClassSeatsAvailable > 0)
-                    EconomyClassSeatsAvailable--;
-                else
-                    throw new InvalidOperationException("No Economy class seats available.");
-                break;
+            switch (flightClassName)
+            {
+                case FlightClassName.EconomyClass:
+                    if (EconomyClassSeatsAvailable > 0)
+                        EconomyClassSeatsAvailable--;
+                    else
+                        throw new InvalidOperationException("No Economy class seats available.");
+                    break;
 
-            case FlightClassName.BusinessClass:
-                if (BusinessClassSeatsAvailable > 0)
-                    BusinessClassSeatsAvailable--;
-                else
-                    throw new InvalidOperationException("No Business class seats available.");
-                break;
+                case FlightClassName.BusinessClass:
+                    if (BusinessClassSeatsAvailable > 0)
+                        BusinessClassSeatsAvailable--;
+                    else
+                        throw new InvalidOperationException("No Business class seats available.");
+                    break;
 
-            case FlightClassName.FirstClass:
-                if (FirstClassSeatsAvailable > 0)
-                    FirstClassSeatsAvailable--;
-                else
-                    throw new InvalidOperationException("No First Class seats available.");
-                break;
+                case FlightClassName.FirstClass:
+                    if (FirstClassSeatsAvailable > 0)
+                        FirstClassSeatsAvailable--;
+                    else
+                        throw new InvalidOperationException("No First Class seats available.");
+                    break;
 
-            default:
-                throw new ArgumentException($"Invalid flight class: {flightClassName}");
+                default:
+                    throw new ArgumentException($"Invalid flight class: {flightClassName}");
+            }
         }
-    }
 
 
 

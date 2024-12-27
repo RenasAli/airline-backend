@@ -49,7 +49,7 @@ namespace backend.Controllers
 			}
 		}
 
-		//[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		public async Task<IActionResult> AddFlight([FromBody] FlightCreationRequest flightCreationRequest)
 		{
@@ -88,7 +88,7 @@ namespace backend.Controllers
 				return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occured while trying to get flights by departure, destination and departure date." });
 			}
 		}
-
+		[Authorize(Roles = "Admin")]
 		[HttpPatch("{id}")]
 		public async Task<IActionResult> UpdateFlight([FromBody]UpdateFlightRequest updateFlightRequest, long id)
 		{

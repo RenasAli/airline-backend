@@ -3,6 +3,7 @@ using backend.Dtos;
 using backend.Models;
 using backend.Repositories;
 using backend.Utils;
+using MongoDB.Bson;
 
 namespace backend.Services
 {
@@ -30,8 +31,9 @@ namespace backend.Services
             }
 
             var bookings = await _bookingRepository.GetBookingsByUserId(user.Id);
-            var mappedBookings = _mapper.Map<List<BookingResponse>>(bookings);
-            return ServiceResult<List<BookingResponse>>.Success(mappedBookings);
+            //Console.WriteLine(bookings.ToJson());
+            var bookingResponse = _mapper.Map<List<BookingResponse>>(bookings);
+            return ServiceResult<List<BookingResponse>>.Success(bookingResponse);
         }
 
         public async Task<ServiceResult<BookingResponse>> CreateBooking(BookingCreationRequest bookingCreationRequest)
