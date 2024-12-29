@@ -90,6 +90,7 @@ namespace backend.Repositories.MongoDB
                     {
                         Id = UniqueSequenceGenerator.GenerateLongIdUsingTicks(),
                         TicketNumber = ticket.TicketNumber,
+                        Price = ticket.FlightPrice,
                         Flight = flightSnap,
                         Passenger = passenger,
                         FlightClass = flightClassSnap
