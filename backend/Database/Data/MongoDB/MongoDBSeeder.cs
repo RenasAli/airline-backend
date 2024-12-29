@@ -170,6 +170,13 @@ namespace backend.Database.Data.MongoDB
                         Email = "admin@example.com",
                         Password = "AQAAAAIAAYagAAAAEJvAdN3g69LF6cuKWK/xIHyUyz1qtNoVCMgKIlSd5oTPwk+7/A+qEAcxQJ2B+FvghQ==",
                         Role = UserRole.Admin,
+                    },
+                    new()
+                    {
+                        Id = 2,
+                        Email = "customer@example.com",
+                        Password = "AQAAAAIAAYagAAAAEJvAdN3g69LF6cuKWK/xIHyUyz1qtNoVCMgKIlSd5oTPwk+7/A+qEAcxQJ2B+FvghQ==",
+                        Role = UserRole.Customer,
                     }
                 };
 
