@@ -24,6 +24,7 @@ namespace backend.Database
                 .EnableSensitiveDataLogging(); // Enable sensitive data logging
         }
 
+
     }
 }
 

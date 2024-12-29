@@ -173,6 +173,28 @@ namespace backend.Database.Data.MongoDB
                     }
                 };
 
+                var flightClasses = new List<FlightClassMongo>()
+                {
+                    new()
+                    {
+                        Id = 1,
+                        Name = FlightClassName.EconomyClass,
+                        PriceMultiplier = 1.0m
+                    },
+                    new()
+                    {
+                        Id = 2,
+                        Name = FlightClassName.BusinessClass,
+                        PriceMultiplier = 1.5m
+                    },
+                    new()
+                    {
+                        Id = 3,
+                        Name = FlightClassName.FirstClass,
+                        PriceMultiplier = 2.0m
+                    }
+                };
+
                 var booking = new BookingMongo
                 {
                     Id = 1,
@@ -274,6 +296,7 @@ namespace backend.Database.Data.MongoDB
                 _context.Airplanes.AddRange(airplanes);
                 _context.Flights.AddRange(flights);
                 _context.Airports.AddRange(airports);
+                _context.FlightClasses.AddRange(flightClasses);
                 _context.SaveChanges();
             }
         }

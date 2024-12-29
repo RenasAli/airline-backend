@@ -20,6 +20,7 @@ namespace backend.Repositories.MongoDB
                 // Create the BookingMongo document
                 var bookingMongo = new BookingMongo
                 {
+                    Id = UniqueSequenceGenerator.GenerateLongIdUsingTicks(),
                     ConfirmationNumber = request.ConfirmationNumber,
                     User = new UserSnapshot
                     {
@@ -29,18 +30,53 @@ namespace backend.Repositories.MongoDB
                     Tickets = new List<TicketEmbedded>()
                 };
 
-                // Get the flight for the tickets
-                var flight = await _context.Flights
-                    .FirstOrDefaultAsync(f => f.Id == request.Tickets.First().FlightId);
-
-                // Get all tickets from the booking
-                /*var tickets = await _context.Bookings
-                    .Where(b => request.Tickets.Select(t => t.TicketNumber).Contains(b.ConfirmationNumber))
-                    .ToListAsync();*/
-
                 // Add tickets to the BookingMongo
                 foreach (var ticket in request.Tickets)
                 {
+                    // Fetch the flight for the current ticket
+                    var flight = await _context.Flights
+                        .FirstOrDefaultAsync(f => f.Id == ticket.FlightId);
+
+                    if (flight == null)
+                    {
+                        throw new Exception($"Flight with ID {ticket.FlightId} not found.");
+                    }
+
+                    // Create a new FlightSnapShot instance for each ticket
+                    var flightSnap = new FlightSnapShot
+                    {
+                        Id = flight.Id,
+                        FlightCode = flight.FlightCode,
+                        DepartureTime = flight.DepartureTime,
+                        CompletionTime = flight.CompletionTime,
+                        TravelTime = flight.TravelTime,
+                        Kilometers = flight.Kilometers,
+                        Price = flight.Price,
+                        EconomyClassSeatsAvailable = flight.EconomyClassSeatsAvailable,
+                        BusinessClassSeatsAvailable = flight.BusinessClassSeatsAvailable,
+                        FirstClassSeatsAvailable = flight.FirstClassSeatsAvailable,
+                        ArrivalPort = flight.ArrivalPort,
+                        DeparturePort = flight.DeparturePort,
+                        FlightsAirline = flight.FlightsAirline,
+                        FlightsAirplane = flight.FlightsAirplane
+                    };
+
+                    // Get flight class for the ticket by flight class id
+                    var flightClass = await _context.FlightClasses
+                        .FirstOrDefaultAsync(fc => fc.Id == ticket.FlightClassId);
+
+                    if (flightClass == null)
+                    {
+                        throw new Exception($"Flight class with ID {ticket.FlightClassId} not found.");
+                    }
+
+                    var flightClassSnap = new FlightClassSnapshot
+                    {
+                        Id = ticket.FlightClassId,
+                        Name = ticket.FlightClassName,
+                        PriceMultiplier = flightClass.PriceMultiplier
+                    };
+
                     var passenger = new PassengerEmbedded
                     {
                         Id = UniqueSequenceGenerator.GenerateLongIdUsingTicks(),
@@ -49,29 +85,14 @@ namespace backend.Repositories.MongoDB
                         Email = ticket.Passenger.Email
                     };
 
-                    var flightSnap = new FlightSnapShot
-                    {
-                        Id = flight.Id,
-                        FlightCode = flight.FlightCode,
-                        DepartureTime = flight.DepartureTime,
-                        CompletionTime = flight.CompletionTime
-                    };
-
-                    var flightClass = new FlightClassSnapshot
-                    {
-                        Id = ticket.FlightClassId,
-                        Name = ticket.FlightClassName,
-                        PriceMultiplier = ticket.FlightPrice // ???
-
-                    };
-
+                    // Create and add the ticket
                     var ticketEmbedded = new TicketEmbedded
                     {
                         Id = UniqueSequenceGenerator.GenerateLongIdUsingTicks(),
                         TicketNumber = ticket.TicketNumber,
                         Flight = flightSnap,
                         Passenger = passenger,
-                        FlightClass = flightClass
+                        FlightClass = flightClassSnap
                     };
 
                     bookingMongo.Tickets.Add(ticketEmbedded);
@@ -82,38 +103,7 @@ namespace backend.Repositories.MongoDB
                 await _context.SaveChangesAsync();
 
                 // Map BookingMongo to Booking for the return value
-                var booking = new Booking
-                {
-                    Id = bookingMongo.Id,
-                    ConfirmationNumber = bookingMongo.ConfirmationNumber,
-                    UserId = bookingMongo.User.Id,
-                    Tickets = bookingMongo.Tickets.Select(t => new Ticket
-                    {
-                        Id = t.Id,
-                        Price = t.Price,
-                        TicketNumber = t.TicketNumber,
-                        Passenger = new Passenger
-                        {
-                            Id = t.Passenger.Id,
-                            FirstName = t.Passenger.FirstName,
-                            LastName = t.Passenger.LastName,
-                            Email = t.Passenger.Email
-                        },
-                        Flight = new Flight
-                        {
-                            Id = t.Flight.Id,
-                            FlightCode = t.Flight.FlightCode,
-                            DepartureTime = t.Flight.DepartureTime,
-                            CompletionTime = t.Flight.CompletionTime,
-                        },
-                        FlightClass = new FlightClass
-                        {
-                            Id = t.FlightClass.Id,
-                            Name = t.FlightClass.Name,
-                            PriceMultiplier = t.FlightClass.PriceMultiplier
-                        }
-                    }).ToList()
-                };
+                var booking = _mapper.Map<Booking>(bookingMongo);
 
                 return booking;
             }
@@ -123,8 +113,6 @@ namespace backend.Repositories.MongoDB
                 throw new ApplicationException("An error occurred while creating the booking.", ex);
             }
         }
-
-
 
 
         public async Task<List<Booking>> GetBookingsByUserId(long id)

@@ -1,6 +1,6 @@
 // To set the test data run the script: mongosh --file init-mongo.js MONGODB_CONNECTION_STRING
 
-db = connect(MONGODB_CONNECTION_STRING);
+db = db.getSiblingDB('admin'); // Use the admin database first
 
 db = db.getSiblingDB('mydatabase'); 
 
@@ -84,4 +84,10 @@ db.flights.insertMany([
 db.users.insertMany([
     { email: "admin@example.com", password: "AQAAAAIAAYagAAAAECrPK/OaPJ1TtlTl0to+E6f86of8ocaDjTNDunN9fPPlIpFUd787gRpL2lusp8srkg==", role: "Admin" },
     { email: "customer@example.com", password: "AQAAAAIAAYagAAAAEJvAdN3g69LF6cuKWK/xIHyUyz1qtNoVCMgKIlSd5oTPwk+7/A+qEAcxQJ2B+FvghQ==", role: "Customer" }
+]);
+
+db.flight_classes.insertMany([
+    { name: "Economy", price_multiplier: 1.0 },
+    { name: "Business", price_multiplier: 1.5 },
+    { name: "First", price_multiplier: 2.0 }
 ]);
