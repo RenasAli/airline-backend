@@ -170,6 +170,35 @@ namespace backend.Database.Data.MongoDB
                         Email = "admin@example.com",
                         Password = "AQAAAAIAAYagAAAAEJvAdN3g69LF6cuKWK/xIHyUyz1qtNoVCMgKIlSd5oTPwk+7/A+qEAcxQJ2B+FvghQ==",
                         Role = UserRole.Admin,
+                    },
+                    new()
+                    {
+                        Id = 2,
+                        Email = "customer@example.com",
+                        Password = "AQAAAAIAAYagAAAAEJvAdN3g69LF6cuKWK/xIHyUyz1qtNoVCMgKIlSd5oTPwk+7/A+qEAcxQJ2B+FvghQ==",
+                        Role = UserRole.Customer,
+                    }
+                };
+
+                var flightClasses = new List<FlightClassMongo>()
+                {
+                    new()
+                    {
+                        Id = 1,
+                        Name = FlightClassName.EconomyClass,
+                        PriceMultiplier = 1.0m
+                    },
+                    new()
+                    {
+                        Id = 2,
+                        Name = FlightClassName.BusinessClass,
+                        PriceMultiplier = 1.5m
+                    },
+                    new()
+                    {
+                        Id = 3,
+                        Name = FlightClassName.FirstClass,
+                        PriceMultiplier = 2.0m
                     }
                 };
 
@@ -274,6 +303,7 @@ namespace backend.Database.Data.MongoDB
                 _context.Airplanes.AddRange(airplanes);
                 _context.Flights.AddRange(flights);
                 _context.Airports.AddRange(airports);
+                _context.FlightClasses.AddRange(flightClasses);
                 _context.SaveChanges();
             }
         }

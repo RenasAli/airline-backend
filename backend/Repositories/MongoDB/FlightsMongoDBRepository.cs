@@ -167,12 +167,18 @@ namespace backend.Repositories.MongoDB
 
         public async Task<List<Ticket>> GetTicketsByFlightId(long flightId)
         {
-            var tickets = await _context.Bookings
+            var bookings = await _context.Bookings
                 .Where(b => b.Tickets.Any(t => t.Flight.Id == flightId))
-                .SelectMany(b => b.Tickets)
-                .Where(t => t.Flight.Id == flightId)
                 .ToListAsync();
 
+            var tickets = new List<TicketEmbedded>();
+            foreach (var booking in bookings)
+            {
+                foreach (var ticket in booking.Tickets)
+                {
+                    tickets.Add(ticket);
+                }
+            }
             return _mapper.Map<List<Ticket>>(tickets);
         }
 
