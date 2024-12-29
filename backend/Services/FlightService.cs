@@ -31,6 +31,7 @@ namespace backend.Services
 
         public async Task<Flight?> GetFlightById(long id)
         {
+            Console.WriteLine("In Service: ", id);
             var flight = await _flightRepository.GetFlightById(id);
             return flight;
         }

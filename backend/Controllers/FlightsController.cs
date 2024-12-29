@@ -96,6 +96,7 @@ namespace backend.Controllers
             try
 			{
 				updateFlightRequest.UpdatedBy = emailClaim?.Value;
+				Console.WriteLine("In Controller: ", id);
                 var existingFlight = await _flightService.GetFlightById(id);
                 if (existingFlight == null)
                 {
@@ -142,6 +143,7 @@ namespace backend.Controllers
             var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
             try
 			{
+				Console.WriteLine(id);
                 var flight = await _flightService.GetFlightById(id);
                 if (flight == null)
                 {

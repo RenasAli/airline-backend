@@ -17,6 +17,13 @@ namespace backend.Database
         public DbSet<FlightClassMongo> FlightClasses { get; set; }
 
         public DbSet<BookingMongo> Bookings { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder
+                .EnableSensitiveDataLogging(); // Enable sensitive data logging
         }
+
     }
+}
 

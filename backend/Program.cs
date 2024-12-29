@@ -153,7 +153,7 @@ namespace backend
                     builder.Services.AddTransient<MongoDBSeeder>();
 
                     // Register IMongoclient for the MongoDB seeder
-                    builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
+                    builder.Services.AddScoped<IMongoClient>(serviceProvider =>
                     {
                         return new MongoClient(mongoDbConnectionString);
                     });

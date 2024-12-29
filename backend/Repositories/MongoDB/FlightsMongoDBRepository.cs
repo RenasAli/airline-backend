@@ -73,10 +73,12 @@ namespace backend.Repositories.MongoDB
 
         public async Task<Flight> Delete(long id, string deletedBy)
         {
+            Console.WriteLine($"Attempting to delete flight with ID: {id}");
 
             var flight = await _context.Flights.FindAsync(id);
             if (flight == null)
             {
+                Console.WriteLine($"Flight with ID {id} not found.");
                 throw new InvalidOperationException("Flight not found.");
             }
 
@@ -112,6 +114,7 @@ namespace backend.Repositories.MongoDB
 
         public async Task<Flight?> GetFlightById(long id)
         {
+            Console.WriteLine("In Repository: ", id);
             var flight = await _context.Flights.FindAsync(id);
             return _mapper.Map<Flight>(flight);
         }
@@ -166,16 +169,36 @@ namespace backend.Repositories.MongoDB
         {
             var tickets = await _context.Bookings
                 .Where(b => b.Tickets.Any(t => t.Flight.Id == flightId))
-                .SelectMany(b => b.Tickets.Where(t => t.Flight.Id == flightId))
+                .SelectMany(b => b.Tickets)
+                .Where(t => t.Flight.Id == flightId)
                 .ToListAsync();
 
             return _mapper.Map<List<Ticket>>(tickets);
         }
 
 
-        public Task<bool> UpdateFlight(Flight flight)
+        public async Task<bool> UpdateFlight(Flight flightToUpdate)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var overLappingFlights = await GetFlightsByAirplaneIdAndTimeInterval(flightToUpdate);
+
+                if (overLappingFlights.Any(flight => flight.Id != flightToUpdate.Id))
+                {
+                    throw new Exception("Update denied, there were overlapping flights");
+                }
+
+                var mongoUpdatedFlight = _mapper.Map<FlightMongo>(flightToUpdate);
+                _context.ChangeTracker.Clear();
+                _context.Flights.Update(mongoUpdatedFlight);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
         }
     }
 }
