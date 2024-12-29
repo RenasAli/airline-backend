@@ -65,6 +65,7 @@ namespace backend
 			builder.Services.AddDbContext<DatabaseContext>(options =>
 			{
 				options.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.AutoDetect(connectionString));
+				options.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.AutoDetect(connectionString));
 			});
 
 
@@ -74,6 +75,12 @@ namespace backend
 			{
 				options.UseMongoDB(mongoDbConnectionString, "mydatabase");
 			});
+
+
+
+
+			builder.Services.AddScoped<Neo4jDbContext>();
+
 			
 			///////
 			builder.Services.AddAuthentication(options =>
@@ -146,7 +153,7 @@ namespace backend
                     builder.Services.AddTransient<MongoDBSeeder>();
 
                     // Register IMongoclient for the MongoDB seeder
-                    builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
+                    builder.Services.AddScoped<IMongoClient>(serviceProvider =>
                     {
                         return new MongoClient(mongoDbConnectionString);
                     });

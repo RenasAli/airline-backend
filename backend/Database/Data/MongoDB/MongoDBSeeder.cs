@@ -208,7 +208,7 @@ namespace backend.Database.Data.MongoDB
             // Including the FlightSnapshot
             Flight = new FlightSnapShot
             {
-                Id = 501,
+                Id = 1,
                 FlightCode = "FLIGHT123",
                 DepartureTime = DateTime.UtcNow.AddHours(2),
                 CompletionTime = DateTime.UtcNow.AddHours(5),
