@@ -39,7 +39,7 @@ namespace backend.Repositories.MongoDB
 
                     if (flight == null)
                     {
-                        throw new Exception($"Flight with ID {ticket.FlightId} not found.");
+                        throw new Exception($"Repository Error: Flight with ID {ticket.FlightId} not found.");
                     }
 
                     // Create a new FlightSnapShot instance for each ticket
